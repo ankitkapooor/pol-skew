@@ -685,3 +685,134 @@ tr.contra td {
   font-family: var(--f-read);
   font-size: 1rem;
 }
+
+/* sharing / consent */
+.share .notice {
+  margin: 0;
+  padding-left: 1.2em;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.check {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  cursor: pointer;
+}
+.check input {
+  margin-top: 4px;
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.field select,
+.field input {
+  font: inherit;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 9px 10px;
+  min-width: 0;
+}
+.field select:focus-visible,
+.field input:focus-visible,
+.check input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.receipt {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 16px;
+  margin: 0;
+}
+.receipt dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: 1rem;
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* print: fallback for "Save as PDF". Always the light palette; controls hidden. */
+@media print {
+  :root,
+  :root:not([data-theme='light']),
+  :root[data-theme='dark'] {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --ink: #14171c;
+    --muted: #5a6170;
+    --line: #d2d6de;
+    --accent: #2f43c8;
+    --accent-soft: rgba(47, 67, 200, 0.12);
+    --good: #1d7a4b;
+    --warn: #9a5c00;
+    --bad: #b3261e;
+    color-scheme: light;
+  }
+  body {
+    background: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .wrap {
+    max-width: none;
+    padding: 0;
+    gap: 16px;
+  }
+  .no-print,
+  .btn,
+  .link,
+  .toast,
+  .share,
+  .bench-panel:not(:has(.pct)) {
+    display: none !important;
+  }
+  .panel,
+  .axis,
+  .diag dt,
+  tr {
+    break-inside: avoid;
+  }
+  details > summary::after {
+    content: '';
+  }
+  .fade,
+  .statement .w {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .track .ci,
+  .track .pt,
+  .mf .bar i {
+    transition: none !important;
+  }
+  table {
+    min-width: 0;
+  }
+  .wrap::after {
+    content: 'Not a validated or norm-referenced instrument; 0 is the scale midpoint, not the average person. polskew.ankitkapoor.me';
+    font-family: var(--f-data);
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+}

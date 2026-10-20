@@ -26,3 +26,12 @@ describe('INSTRUMENT_VERSION', () => {
     expect(a).toContain('"MIN_ANSWERED_SHARE":0.6');
   });
 });
+
+import committedKey from '../../data/instrument-key.json';
+import { instrumentKey } from '../../src/instrument/key';
+
+describe('data/instrument-key.json', () => {
+  it('matches the item bank (run `npm run analysis:key` if not)', () => {
+    expect(committedKey).toEqual(JSON.parse(JSON.stringify(instrumentKey())));
+  });
+});

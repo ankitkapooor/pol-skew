@@ -1,0 +1,5 @@
+# Copy to .dev.vars for `npm run dev:worker`. These are Cloudflare's published Turnstile test keys
+# (the widget always passes); never use them in production.
+COLLECTION_ENABLED=true
+TURNSTILE_SITE_KEY=1x00000000000000000000AA
+TURNSTILE_SECRET=1x0000000000000000000000000000000AA

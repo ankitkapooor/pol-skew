@@ -2,6 +2,30 @@
 
 This document tells you how the prototype in `legacy/ideology-inventory.html` works, why it is built that way, and what to build next. Line references are approximate; search the file for the named function or constant.
 
+## Status (October 2026)
+
+All four work-queue tasks are implemented in this repository. What remains needs the owner:
+
+| Task               | State                                                                                                                         | Owner action needed                                                                                                                          |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1. Port            | Done: Vite + vanilla TS, Vitest, Playwright, ESLint/Prettier, CI. Behaviour matches the prototype except the two fixes below. | none                                                                                                                                         |
+| 2. U.S. norms      | Item spec, pipeline, tests and app module done. Benchmark offer is hidden until real norms exist.                             | Download ANES 2024 (registration) and CES 2024 into `data/raw/`, read the ANES terms, run `npm run norms`, commit `data/norms/us-2024.json`. |
+| 3. Validation data | Consent flow, Worker + D1 API, R analysis done. Collection ships **disabled**.                                                | Confirm policy text and IRB question (`docs/PRIVACY.md`), create D1 + Turnstile, set `COLLECTION_ENABLED`.                                   |
+| 4. Exports         | TXT, JSON, PNG (portrait and square), PDF, print stylesheet.                                                                  | none                                                                                                                                         |
+
+**Deliberate changes from the prototype**
+
+1. _Run order (§1.3)._ The prototype tried 5,000 shuffles and silently used an unconstrained order if
+   none passed. Only about 0.08% of shuffles pass, so that happened in about 2% of runs. The cap is now
+   200,000 (`ORDER.maxTries`), which in practice never fails, and the code throws rather than
+   returning an invalid order.
+2. _Shared response times (Task 3)._ Times are rounded to 100 ms, but any positive time stays at least
+   100 ms. Otherwise a near-instant answer would round to 0 and drop out of the server-side speed
+   check.
+
+Fonts are self-hosted (`@fontsource`) instead of loaded from Google Fonts, so no request leaves the
+browser by default.
+
 ---
 
 ## Part 1. How the prototype works
@@ -44,11 +68,11 @@ This document tells you how the prototype in `legacy/ideology-inventory.html` wo
 
 ### 1.3 Run order (`newRun`, `orderOK`)
 
-Random shuffle of the 66 statements, re-drawn until two constraints hold: no scale appears three times in a row, and the two halves of a pair are at least 8 positions apart. Then `AC` is inserted at position 20–29, `IF` at 44–53, and `SP` is appended last.
+Random shuffle of the 66 statements, re-drawn until two constraints hold: no scale appears three times in a row, and the two halves of a pair are at least 8 positions apart. Then `AC` is inserted at position 20–29, `IF` at 44–53, and `SP` is appended last. (Port: `src/instrument/order.ts`, RNG injectable; retry cap raised, see Status.)
 
 ### 1.4 State and persistence
 
-`S = {order, idx, answers:{id:value}, times:{id:ms}, words:{id:wordCount}, done}` saved to `localStorage` key `ideology-inventory-v2` (all access wrapped in try/catch). Only the **first** response time per item is recorded (`performance.now()` from render to first answer), along with the item's word count.
+`S = {order, idx, answers:{id:value}, times:{id:ms}, words:{id:wordCount}, done}` saved to `localStorage` key `ideology-inventory-v2` (all access wrapped in try/catch). Only the **first** response time per item is recorded (`performance.now()` from render to first answer), along with the item's word count. (Port: `src/state/storage.ts`; runs also record `version`, `completedOn` and an optional `benchmark` block.)
 
 ### 1.5 Scoring (pure functions)
 
@@ -106,7 +130,11 @@ Design tokens are at the top of the `<style>` block: light values on `:root`, da
 
 ## Part 2. Work queue
 
-### Task 1. Port to a modular, tested codebase
+### Task 1. Port to a modular, tested codebase ✅
+
+_Implemented._ `INSTRUMENT_VERSION` is `semver+hash` where the hash is the first 8 hex chars of
+SHA-256 over `src/instrument/fingerprint.ts` (items, special items, response options, every constant
+in `src/scoring/constants.ts`). `npm run build` and CI fail when the hash is stale.
 
 Goal: identical behaviour and look, maintainable structure.
 
@@ -125,7 +153,13 @@ Goal: identical behaviour and look, maintainable structure.
 - Tests: every row of the quality table, both sanity cases in 1.5, band clipping, missing-data thresholds, ordering constraints over many seeds.
 - Deliver a README written for portfolio readers: what it measures, the research basis, noise controls, screenshots, live link, limitations.
 
-### Task 2. U.S. benchmark norms (item #11)
+### Task 2. U.S. benchmark norms (item #11) ✅ (awaiting raw data)
+
+_Implemented._ Eleven items (8 ANES, 3 CES) verified against the codebooks and questionnaires:
+`data/benchmark-items.json`, `data/SOURCES.md`. Composites are ANES-only (never mixed across surveys)
+and sum integer keyed steps 0–6 per item (0–18). Percentile = P(Y < y) + ½P(Y = y). ANES weight is
+`V240108a` (pre-election, full sample without PAPI cases, which saw different abortion wording); the
+population is U.S. adult **citizens**, and the UI says so.
 
 Goal: let respondents see where they fall relative to U.S. adults, using public survey microdata, without pretending our own scales have norms.
 
@@ -160,7 +194,12 @@ Goal: let respondents see where they fall relative to U.S. adults, using public 
 - Per-item cards: "You chose B. 34% of U.S. adults chose B."
 - State limits in the UI: percentiles describe 2024 U.S. adults; survey mode and sampling error apply; the benchmark is separate from the main scales.
 
-### Task 3. Consented, anonymous data collection for validation (item #12)
+### Task 3. Consented, anonymous data collection for validation (item #12) ✅ (collection off)
+
+_Implemented_ on Cloudflare Worker + static assets + D1 (the recommended option; the owner chose
+Cloudflare hosting). Extra endpoint `GET /api/config` tells the client whether collection is on.
+Scores and quality are recomputed on the server. U.S. state was dropped from demographics (see
+`docs/PRIVACY.md`). R analysis in `scripts/analysis/`.
 
 Goal: collect enough real responses to validate the instrument, with explicit consent and minimal data.
 
@@ -202,7 +241,11 @@ Goal: collect enough real responses to validate the instrument, with explicit co
 - Test–retest: ICC per scale on linked submissions.
 - Rough sample targets: ~300 complete, quality-passing runs for EFA/CFA; ~500 for stable IRT; ~100 linked retests. Generate a markdown or HTML report, and only update the instrument (new `INSTRUMENT_VERSION`) based on its findings.
 
-### Task 4. Export results (PDF, PNG, text)
+### Task 4. Export results (PDF, PNG, text) ✅
+
+_Implemented._ The PDF uses jsPDF standard fonts (Helvetica, Times, Courier) because embedding the
+web fonts would need TTF files; text is mapped to Latin-1 (`src/export/pdftext.ts`). The PNG card
+draws with the web fonts after `document.fonts.load`.
 
 Goal: let respondents keep their results. This runs on a normal hosted site, so downloads, `window.print()` and canvas export all work, unlike in the prototype's sandbox.
 

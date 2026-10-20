@@ -2,15 +2,24 @@ import { loadNorms } from '../benchmark/norms';
 import type { Results } from '../scoring/results';
 import type { RunState } from '../state/storage';
 import { benchmarkPanel } from './benchmark';
+import { getShared, runFingerprint } from '../consent/retest';
 import { $ } from './dom';
+import { exportsPanel, wireExports } from './exports';
+import { fetchConfig, mountShare } from './share';
 
 export interface ExtrasHandlers {
   openBenchmark: () => void;
 }
 
 /** Mounts the optional results-page modules: exports, U.S. benchmark, and consented sharing. */
-export function mountExtras(root: HTMLElement, S: RunState, _R: Results, h: ExtrasHandlers): void {
-  root.innerHTML = `<div id="bench-slot"></div>`;
+export function mountExtras(root: HTMLElement, S: RunState, R: Results, h: ExtrasHandlers): void {
+  root.innerHTML = `${exportsPanel()}<div id="bench-slot"></div><div id="share-slot"></div>`;
+  wireExports(S, R);
+  void fetchConfig().then((cfg) => {
+    const slot = $('share-slot');
+    const shared = !!getShared()[runFingerprint(S.order)];
+    if (slot && (cfg?.collecting || (cfg && shared))) mountShare(slot, S, cfg);
+  });
   void loadNorms().then((norms) => {
     const slot = $('bench-slot');
     if (!norms || !slot) return;

@@ -4,17 +4,13 @@ A research-informed political-orientation quiz. It places a respondent on separa
 
 ## Where things stand
 
-- `legacy/ideology-inventory.html` is the working prototype: one self-contained HTML file (HTML, CSS and vanilla JS, no build). It is the **source of truth** for the item bank, scoring rules and visual design until the port is done. Do not edit it; port from it.
-- `docs/HANDOFF.md` explains exactly how the prototype works and specifies the work queue. Read it before starting any task.
+- The port is done: the modular TypeScript codebase in `src/` is now the source of truth. `legacy/ideology-inventory.html` is the original prototype, kept for reference only. Do not edit it.
+- `docs/HANDOFF.md` explains how the instrument works, what changed in the port, and the status of each task. Read it before starting any task.
+- Hosting: Cloudflare Worker + static assets + D1 at `polskew.ankitkapoor.me` (owner's choice).
 
-## Work queue (in order)
+## Work queue
 
-1. Port the prototype into a modular, tested codebase (no behaviour changes).
-2. U.S. benchmark norms from ANES 2024 and CES public data.
-3. Consented, anonymous response collection for validation (pilot, factor analysis, IRT, retest).
-4. Export results as PDF, PNG and text.
-
-Each is specified in `docs/HANDOFF.md`. Finish and test one before starting the next. Ask the owner before choosing paid services, creating accounts, or picking between the hosting options listed there.
+All four tasks are implemented (see the status table in `docs/HANDOFF.md`). Remaining work needs the owner: build real norms from the ANES/CES microdata, sign off the data policy and IRB question, and enable collection. Ask the owner before choosing paid services, creating accounts, or picking between the hosting options listed there.
 
 ## Non-negotiables
 
@@ -30,4 +26,21 @@ Keep the prototype's visual language: cool grey-blue neutrals, a single ultramar
 
 ## Commands
 
-Fill this in once the toolchain from Task 1 exists (install, dev, test, lint, build, deploy).
+```bash
+npm install                 # Node 22+
+npm run dev                 # Vite dev server; ?norms=fixture loads synthetic benchmark norms
+npm test                    # Vitest unit tests (scoring, quality table, sanity cases, API, exports)
+npm run test:e2e            # Playwright (desktop + mobile)
+npm run lint                # ESLint + Prettier check
+npm run typecheck           # app, tests, worker, node scripts
+npm run build               # version:check, then vite build → dist/
+npm run version:gen         # after bumping INSTRUMENT_SEMVER for a wording/keying/scoring change
+npm run analysis:key        # regenerate data/instrument-key.json after item changes
+npm run dev:worker          # build + wrangler dev (needs .dev.vars from .dev.vars.example)
+npm run db:migrate:local    # / db:migrate:remote
+npm run deploy              # build + wrangler deploy
+npm run norms               # Python: build data/norms/us-2024.json from data/raw/ (venv in .venv)
+npm run test:norms          # pytest for the norms pipeline
+npm run analysis:export     # export D1 submissions (owner's Cloudflare login)
+npm run analysis            # R validation report → scripts/analysis/output/report.md
+```

@@ -1,0 +1,369 @@
+{
+  "instrumentVersion": "2.0.0+4c1a99af",
+  "core": ["econ", "social", "auth"],
+  "short": ["climate", "global", "populism"],
+  "paired": [
+    {
+      "id": "E1a",
+      "pair": "E1",
+      "dim": "econ",
+      "dir": 1
+    },
+    {
+      "id": "E1b",
+      "pair": "E1",
+      "dim": "econ",
+      "dir": -1
+    },
+    {
+      "id": "E2a",
+      "pair": "E2",
+      "dim": "econ",
+      "dir": 1
+    },
+    {
+      "id": "E2b",
+      "pair": "E2",
+      "dim": "econ",
+      "dir": -1
+    },
+    {
+      "id": "E3a",
+      "pair": "E3",
+      "dim": "econ",
+      "dir": 1
+    },
+    {
+      "id": "E3b",
+      "pair": "E3",
+      "dim": "econ",
+      "dir": -1
+    },
+    {
+      "id": "E4a",
+      "pair": "E4",
+      "dim": "econ",
+      "dir": 1
+    },
+    {
+      "id": "E4b",
+      "pair": "E4",
+      "dim": "econ",
+      "dir": -1
+    },
+    {
+      "id": "E5a",
+      "pair": "E5",
+      "dim": "econ",
+      "dir": 1
+    },
+    {
+      "id": "E5b",
+      "pair": "E5",
+      "dim": "econ",
+      "dir": -1
+    },
+    {
+      "id": "E6a",
+      "pair": "E6",
+      "dim": "econ",
+      "dir": 1
+    },
+    {
+      "id": "E6b",
+      "pair": "E6",
+      "dim": "econ",
+      "dir": -1
+    },
+    {
+      "id": "S1a",
+      "pair": "S1",
+      "dim": "social",
+      "dir": 1
+    },
+    {
+      "id": "S1b",
+      "pair": "S1",
+      "dim": "social",
+      "dir": -1
+    },
+    {
+      "id": "S2a",
+      "pair": "S2",
+      "dim": "social",
+      "dir": 1
+    },
+    {
+      "id": "S2b",
+      "pair": "S2",
+      "dim": "social",
+      "dir": -1
+    },
+    {
+      "id": "S3a",
+      "pair": "S3",
+      "dim": "social",
+      "dir": 1
+    },
+    {
+      "id": "S3b",
+      "pair": "S3",
+      "dim": "social",
+      "dir": -1
+    },
+    {
+      "id": "S4a",
+      "pair": "S4",
+      "dim": "social",
+      "dir": 1
+    },
+    {
+      "id": "S4b",
+      "pair": "S4",
+      "dim": "social",
+      "dir": -1
+    },
+    {
+      "id": "S5a",
+      "pair": "S5",
+      "dim": "social",
+      "dir": 1
+    },
+    {
+      "id": "S5b",
+      "pair": "S5",
+      "dim": "social",
+      "dir": -1
+    },
+    {
+      "id": "S6a",
+      "pair": "S6",
+      "dim": "social",
+      "dir": 1
+    },
+    {
+      "id": "S6b",
+      "pair": "S6",
+      "dim": "social",
+      "dir": -1
+    },
+    {
+      "id": "A1a",
+      "pair": "A1",
+      "dim": "auth",
+      "dir": 1
+    },
+    {
+      "id": "A1b",
+      "pair": "A1",
+      "dim": "auth",
+      "dir": -1
+    },
+    {
+      "id": "A2a",
+      "pair": "A2",
+      "dim": "auth",
+      "dir": 1
+    },
+    {
+      "id": "A2b",
+      "pair": "A2",
+      "dim": "auth",
+      "dir": -1
+    },
+    {
+      "id": "A3a",
+      "pair": "A3",
+      "dim": "auth",
+      "dir": 1
+    },
+    {
+      "id": "A3b",
+      "pair": "A3",
+      "dim": "auth",
+      "dir": -1
+    },
+    {
+      "id": "A4a",
+      "pair": "A4",
+      "dim": "auth",
+      "dir": 1
+    },
+    {
+      "id": "A4b",
+      "pair": "A4",
+      "dim": "auth",
+      "dir": -1
+    },
+    {
+      "id": "A5a",
+      "pair": "A5",
+      "dim": "auth",
+      "dir": 1
+    },
+    {
+      "id": "A5b",
+      "pair": "A5",
+      "dim": "auth",
+      "dir": -1
+    },
+    {
+      "id": "A6a",
+      "pair": "A6",
+      "dim": "auth",
+      "dir": 1
+    },
+    {
+      "id": "A6b",
+      "pair": "A6",
+      "dim": "auth",
+      "dir": -1
+    },
+    {
+      "id": "C1a",
+      "pair": "C1",
+      "dim": "climate",
+      "dir": 1
+    },
+    {
+      "id": "C1b",
+      "pair": "C1",
+      "dim": "climate",
+      "dir": -1
+    },
+    {
+      "id": "C2a",
+      "pair": "C2",
+      "dim": "climate",
+      "dir": 1
+    },
+    {
+      "id": "C2b",
+      "pair": "C2",
+      "dim": "climate",
+      "dir": -1
+    },
+    {
+      "id": "G1a",
+      "pair": "G1",
+      "dim": "global",
+      "dir": 1
+    },
+    {
+      "id": "G1b",
+      "pair": "G1",
+      "dim": "global",
+      "dir": -1
+    },
+    {
+      "id": "G2a",
+      "pair": "G2",
+      "dim": "global",
+      "dir": 1
+    },
+    {
+      "id": "G2b",
+      "pair": "G2",
+      "dim": "global",
+      "dir": -1
+    },
+    {
+      "id": "Q1a",
+      "pair": "Q1",
+      "dim": "populism",
+      "dir": 1
+    },
+    {
+      "id": "Q1b",
+      "pair": "Q1",
+      "dim": "populism",
+      "dir": -1
+    },
+    {
+      "id": "Q2a",
+      "pair": "Q2",
+      "dim": "populism",
+      "dir": 1
+    },
+    {
+      "id": "Q2b",
+      "pair": "Q2",
+      "dim": "populism",
+      "dir": -1
+    }
+  ],
+  "mf": [
+    {
+      "id": "M1",
+      "f": "care"
+    },
+    {
+      "id": "M2",
+      "f": "care"
+    },
+    {
+      "id": "M3",
+      "f": "care"
+    },
+    {
+      "id": "M4",
+      "f": "equality"
+    },
+    {
+      "id": "M5",
+      "f": "equality"
+    },
+    {
+      "id": "M6",
+      "f": "equality"
+    },
+    {
+      "id": "M7",
+      "f": "proportionality"
+    },
+    {
+      "id": "M8",
+      "f": "proportionality"
+    },
+    {
+      "id": "M9",
+      "f": "proportionality"
+    },
+    {
+      "id": "M10",
+      "f": "loyalty"
+    },
+    {
+      "id": "M11",
+      "f": "loyalty"
+    },
+    {
+      "id": "M12",
+      "f": "loyalty"
+    },
+    {
+      "id": "M13",
+      "f": "authority"
+    },
+    {
+      "id": "M14",
+      "f": "authority"
+    },
+    {
+      "id": "M15",
+      "f": "authority"
+    },
+    {
+      "id": "M16",
+      "f": "purity"
+    },
+    {
+      "id": "M17",
+      "f": "purity"
+    },
+    {
+      "id": "M18",
+      "f": "purity"
+    }
+  ]
+}

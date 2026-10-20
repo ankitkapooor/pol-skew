@@ -1,0 +1,142 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`text export > matches the snapshot 1`] = `
+"Ideology Inventory: results
+------------------------------------------------------------------------
+Result:            Centrist
+                   Your economic and social answers both sit close to the middle of the scale. You may hold genuinely moderate views, or mix positions from different sides topic by topic.
+Data quality:      Moderate
+Completed:         2026-10-19
+Instrument:        2.0.0+test0000
+Source:            https://polskew.ankitkapoor.me
+
+Not a validated or norm-referenced instrument; 0 is the scale midpoint, not the average person.
+
+CORE SCALES (−100 to +100; band = item-to-item spread, not retest reliability)
+  Economic                 +5  band -38 to +47 (±43)  centrist  [11/12 answered]
+  Social & cultural       +10  band -33 to +53 (±43)  centrist  [10/12 answered]
+  State authority         +10  band -36 to +56 (±46)  centrist  [10/12 answered]
+
+SHORT SCALES (4 statements each, indicative only)
+  Climate & energy        -50  band -90 to -10 (±40)  moderately climate-first  [4/4 answered]
+  Trade & sovereignty     +33  band -53 to +100 (±86)  leaning national-first  [3/4 answered]
+  Populism                +50  band -7 to +100 (±57)  moderately populist  [3/4 answered]
+
+POLES
+  Economic               − Left: redistribution, public provision / + Right: markets, lower taxes
+  Social & cultural      − Progressive: change, pluralism / + Traditional: custom, religion
+  State authority        − Civil-libertarian: limits on state power / + Order & authority: strong state
+  Climate & energy       − Climate action first / + Cost and growth first
+  Trade & sovereignty    − Open, internationalist / + National, protectionist
+  Populism               − Trusts representatives & experts / + People versus the elite
+
+MORAL FOUNDATIONS (relative to your own average; raw 1–5 mean in brackets)
+  Care             +0.35 (3.7)
+  Equality         -0.65 (2.7)
+  Proportionality  +1.19 (4.5)
+  Loyalty          -0.98 (2.3)
+  Authority        +0.19 (3.5)
+  Purity           +0.35 (3.7)
+  Relative to your own average, you weight proportionality and care most and loyalty least. Your individual-focused foundations (care, equality) and group-focused ones (loyalty, authority, purity) are roughly balanced.
+
+LABEL VS. POSITIONS
+  Self-placement: Slightly left
+  You described yourself as slightly left, but your issue positions sit about 41 points further right / traditional. Political scientists call this a gap between symbolic ideology (the label) and operational ideology (the positions). It is common.
+
+DATA QUALITY: Moderate
+  [GOOD] Attention check: Passed
+  [GOOD] Implausible-statement check: Passed
+  [WARN] Contradictory pairs: 3 of 17
+  [GOOD] Agreement tendency: +0.15
+  [GOOD] Response variety: 1.36
+  [GOOD] Answers faster than reading speed: 0%
+  [WARN] “No opinion” answers: 9 of 66
+
+U.S. BENCHMARK ANSWERS (asked in original ANES 2024 / CES 2024 wording)
+  V241177    3 Slightly liberal
+  V241239    6
+  V241245    skipped
+  V241252    99 Haven’t thought much about this
+  V241258    skipped
+  V241248    skipped
+  V241372x   skipped
+  V241378x   skipped
+  CC24_328e  skipped
+  CC24_326a  skipped
+  CC24_323a  skipped
+
+YOUR ANSWERS (a/b = the two sides of one pair; * = contradicted pair)
+   E1a  Strongly agree              Taxes on high earners and businesses should be kept low, even if that means fewer public services.
+   E1b  Somewhat disagree           Taxes on high earners and businesses should be raised to pay for more public services.
+   E2a  Somewhat agree              Businesses should be free to operate with few government rules.
+   E2b  Strongly disagree           Businesses should operate under strict government rules that protect the public.
+   E3a  Neither agree nor disagree  People should mainly pay for their own healthcare, through work or private insurance.
+   E3b  No opinion                  Healthcare should be provided to everyone and paid for through taxes.
+  *E4a  Somewhat agree              Wages and working hours should be left to employers and workers to agree, with little government involvement.
+  *E4b  Strongly agree              The government should set a minimum wage high enough for a full-time worker to live on.
+   E5a  Somewhat disagree           Utilities such as electricity and water are best run by private companies.
+   E5b  Somewhat agree              Utilities such as electricity and water are best run by the government.
+   E6a  Strongly disagree           Government support for people who are out of work should be kept modest.
+   E6b  Neither agree nor disagree  Government support for people who are out of work should be generous.
+   S1a  No opinion                  Society is better off when people stick to long-standing traditions.
+   S1b  Somewhat agree              Society is better off when people feel free to break with tradition.
+   S2a  Strongly agree              Religious teachings should guide a country’s laws.
+   S2b  Somewhat disagree           A country’s laws should be kept separate from religious teachings.
+   S3a  Somewhat agree              Marriage should be only between a man and a woman.
+   S3b  Strongly disagree           Same-sex couples should have the same right to marry as opposite-sex couples.
+   S4a  Neither agree nor disagree  Abortion should be illegal in all or most cases.
+   S4b  No opinion                  Abortion should be legal in all or most cases.
+  *S5a  Somewhat agree              People who move to a country should adopt its customs and way of life.
+  *S5b  Strongly agree              People who move to a country should be free to keep their own customs and way of life.
+   S6a  Somewhat disagree           A person’s legal sex should always be the sex recorded at birth.
+   S6b  Somewhat agree              People should be able to change their legal sex to match their gender identity.
+   A1a  Strongly disagree           In a national emergency, the head of government should be able to act without approval from courts or the legislature.
+   A1b  Neither agree nor disagree  Even in a national emergency, courts and the legislature should be able to overrule the head of government.
+   A2a  No opinion                  The government should be able to ban speech that most people find deeply offensive.
+   A2b  Somewhat agree              Speech that most people find deeply offensive should still be legal.
+   A3a  Strongly agree              Government monitoring of private communications is acceptable when it helps prevent terrorism.
+   A3b  Somewhat disagree           The government should not monitor anyone’s private communications without a court warrant.
+   A4a  Somewhat agree              Police should have broad powers to break up protests that disrupt public life.
+   A4b  Strongly disagree           Peaceful protests should be allowed even when they disrupt public life.
+   A5a  Neither agree nor disagree  People who commit crimes should receive harsher punishments than they do now.
+   A5b  No opinion                  The justice system should focus more on rehabilitation than on punishment.
+  *A6a  Somewhat agree              The government should restrict activities that are mainly dangerous to the people who choose them.
+  *A6b  Strongly agree              Adults should be free to take risks that mainly affect themselves.
+   C1a  Somewhat disagree           Keeping energy cheap matters more than moving quickly away from fossil fuels.
+   C1b  Somewhat agree              Moving quickly away from fossil fuels matters more than keeping energy cheap.
+   C2a  Strongly disagree           Climate policy should rely mainly on voluntary action by businesses and individuals.
+   C2b  Neither agree nor disagree  Climate policy should rely mainly on binding government limits on emissions.
+   G1a  No opinion                  Imports should be limited to protect jobs in domestic industries.
+   G1b  Somewhat agree              Trade between countries should be as free as possible.
+   G2a  Strongly agree              A country should act on its own interests, even when allies and international bodies disagree.
+   G2b  Somewhat disagree           A country should work through international agreements, even when that limits its choices.
+   Q1a  Somewhat agree              Ordinary citizens, not politicians or experts, should make the most important political decisions.
+   Q1b  Strongly disagree           The most important political decisions are best left to elected representatives and experts.
+   Q2a  Neither agree nor disagree  Politicians mostly serve the interests of a powerful elite.
+   Q2b  No opinion                  Most politicians genuinely try to serve the public.
+   M1   Somewhat agree              It is important to comfort people who are going through a hard time.
+   M2   Strongly agree              Causing someone to suffer is one of the worst things a person can do.
+   M3   Somewhat disagree           We should look out for those who cannot protect themselves.
+   M4   Somewhat agree              The world would be better if wealth were shared more equally.
+   M5   Strongly disagree           A society is fairer when the gap between rich and poor is small.
+   M6   Neither agree nor disagree  Everyone should have a similar standard of living, whatever their background.
+   M7   No opinion                  People should be rewarded in proportion to what they contribute.
+   M8   Somewhat agree              It is fair that people who work harder end up with more.
+   M9   Strongly agree              People who make no effort should not receive the same as those who do.
+   M10  Somewhat disagree           People should stand by their community or country even when it makes mistakes.
+   M11  Somewhat agree              Betraying your group is one of the worst things a person can do.
+   M12  Strongly disagree           It is important to be a loyal member of the groups you belong to.
+   M13  Neither agree nor disagree  Respecting legitimate authority is necessary for society to function.
+   M14  No opinion                  Traditions passed down by elders deserve respect, even when their purpose isn’t clear.
+   M15  Somewhat agree              Children should be taught to respect their elders and the people in charge.
+   M16  Strongly agree              Some acts are wrong because they are degrading, even if no one is harmed.
+   M17  Somewhat disagree           People should keep their bodies and minds free of corrupting influences.
+   M18  Somewhat agree              Some things are sacred and should not be mocked or treated lightly.
+   AC   Somewhat disagree           To show you’re reading each statement, choose “Somewhat disagree” for this one.
+   IF   Strongly disagree           I have never used a phone or a computer.
+
+------------------------------------------------------------------------
+Cutoffs are provisional: under 15 centrist, 15–40 leaning, 40–70 moderately, 70+ strongly.
+They come from what the answers mean, not from population data.
+"
+`;

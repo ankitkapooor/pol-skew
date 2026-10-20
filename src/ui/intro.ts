@@ -1,6 +1,7 @@
 import { ITEMS } from '../instrument/items';
 import type { RunState } from '../state/storage';
 import { compassSVG } from './compass';
+import { daysSince, getRetest } from '../consent/retest';
 import { $, app } from './dom';
 
 export interface IntroHandlers {
@@ -13,7 +14,13 @@ export function renderIntro(S: RunState | null, h: IntroHandlers): void {
   const n = Object.keys(S?.answers || {}).length;
   const resumable = S && !S.done && n > 0;
   const hasResult = S && S.done;
-  app().innerHTML = `
+  const retest = getRetest();
+  const due = retest ? daysSince(retest.firstOn) : -1;
+  const reminder =
+    retest && due >= 14
+      ? `<section class="panel row fade" style="justify-content:space-between"><p class="small">It has been ${due} days since you offered to retake the inventory. Retaking now helps test whether the scales are stable over time.</p><button class="btn" id="retest-go">Retake now</button></section>`
+      : '';
+  app().innerHTML = `${reminder}
   <header class="stack fade">
     <span class="eyebrow">Political orientation inventory · ${ITEMS.length + 3} items · about 12 minutes</span>
     <h1>Where do your views actually sit?</h1>
@@ -55,6 +62,8 @@ export function renderIntro(S: RunState | null, h: IntroHandlers): void {
   if (start) start.onclick = h.start;
   const resume = $('resume');
   if (resume) resume.onclick = h.resume;
+  const go = $('retest-go');
+  if (go) go.onclick = h.start;
   const view = $('view');
   if (view) view.onclick = h.view;
 }

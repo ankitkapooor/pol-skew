@@ -5,12 +5,8 @@ import {
   FOUNDATIONS,
   INFREQ,
   ITEMS,
-  LIKERT,
   MF_NAMES,
   SHORT,
-  isMF,
-  isSpecial,
-  type AnyItem,
   type ScaleDim,
 } from '../instrument/items';
 import { axisWord } from '../scoring/labels';
@@ -22,6 +18,7 @@ import { shortSummary } from '../export/text';
 import { compassSVG } from './compass';
 import { $, app, copyText, esc, sgn } from './dom';
 import { mountExtras } from './extras';
+import { answerLabel, poleName } from './labels';
 
 export interface ResultsHandlers {
   retake: () => void;
@@ -42,13 +39,6 @@ export function axisBlock(dim: ScaleDim, r: ScaleResult, short?: boolean): strin
     <p class="small muted">Reads as <b style="color:var(--ink);font-weight:600">${axisWord(dim, r.score)}</b> · ${r.n} of ${r.total} answered${short ? '' : ` · same direction on ${Math.round(r.consistency * 100)}% of the weight`}</p>
   </div>`;
 }
-
-export const answerLabel = (a: number | undefined): string =>
-  a === undefined ? '—' : a === 0 ? 'No opinion' : LIKERT[a - 1];
-
-/** What agreeing with an item points to: a pole word, a foundation, or "Check". */
-export const poleName = (it: AnyItem): string =>
-  isSpecial(it) ? 'Check' : isMF(it) ? MF_NAMES[it.f] : it.dir > 0 ? DIMS[it.dim].posW : DIMS[it.dim].negW;
 
 function mfRows(R: Results): string {
   return FOUNDATIONS.map((f) => {
