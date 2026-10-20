@@ -279,7 +279,7 @@ function mountAutomaticShare(slot: HTMLElement, S: RunState, cfg: ApiConfig): vo
   };
   const prepare = async () => {
     retry.hidden = true;
-    status.textContent = 'Completing the bot check before sharing…';
+    status.textContent = 'Complete the bot check above to finish sharing your responses.';
     if (!cfg.collecting || !cfg.turnstileSiteKey) {
       fail(
         'Sharing is temporarily unavailable. Your responses have not been submitted. Retry when connected.',
@@ -300,6 +300,7 @@ function mountAutomaticShare(slot: HTMLElement, S: RunState, cfg: ApiConfig): vo
           return true;
         },
         'expired-callback': () => fail('The bot check expired. Please retry sharing.'),
+        'timeout-callback': () => fail('The bot check timed out. Please retry sharing.'),
       });
     } catch {
       fail('The bot check could not load. Please retry sharing.');

@@ -13,7 +13,7 @@ export interface ExtrasHandlers {
 
 /** Mounts the optional results-page modules: exports, U.S. benchmark, and consented sharing. */
 export function mountExtras(root: HTMLElement, S: RunState, R: Results, h: ExtrasHandlers): void {
-  root.innerHTML = `${exportsPanel()}<div id="bench-slot"></div><div id="share-slot"></div>`;
+  root.innerHTML = `${exportsPanel()}<div id="bench-slot"></div>`;
   wireExports(S, R);
   void fetchConfig().then((cfg) => {
     const slot = $('share-slot');

@@ -88,6 +88,8 @@ export function renderResults(S: RunState, animate: boolean, h: ResultsHandlers)
     </div>
   </header>
 
+  <div id="share-slot"></div>
+
   <section class="res-grid fade">
     <div class="panel compass">${e.ok && so.ok ? compassSVG(e.score, so.score, ce, cs, { id: 'pt', animate: !!animate }) : '<p class="muted">Plot unavailable.</p>'}
       <p class="small muted" style="margin-top:10px">Scores run from −100 to +100. 0 is the middle of the scale, not the average person. The dashed box shows how much your answers varied from topic to topic within each scale (a wider box means your views differ by topic, or some answers were noisy). It does not predict a retest.</p>
