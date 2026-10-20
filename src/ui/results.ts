@@ -25,6 +25,7 @@ import { mountExtras } from './extras';
 
 export interface ResultsHandlers {
   retake: () => void;
+  openBenchmark: () => void;
 }
 
 export function axisBlock(dim: ScaleDim, r: ScaleResult, short?: boolean): string {
@@ -188,6 +189,6 @@ export function renderResults(S: RunState, animate: boolean, h: ResultsHandlers)
 
   $('copy')!.onclick = () => copyText(shortSummary(R));
   $('retake')!.onclick = h.retake;
-  mountExtras($('extras')!, S, R);
   window.scrollTo(0, 0);
+  mountExtras($('extras')!, S, R, h);
 }

@@ -25,7 +25,9 @@
     "version:check": "tsx scripts/instrument-version.ts --check",
     "db:migrate:local": "wrangler d1 migrations apply pol-skew --local",
     "db:migrate:remote": "wrangler d1 migrations apply pol-skew --remote",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "npm run build && wrangler deploy",
+    "norms": ".venv/bin/python scripts/norms/build_norms.py",
+    "test:norms": ".venv/bin/python -m pytest -q scripts/norms/tests"
   },
   "dependencies": {
     "@fontsource-variable/newsreader": "5.3.0",

@@ -1,0 +1,351 @@
+{
+  "$comment": "Benchmark module: items copied verbatim from the source questionnaires (web-mode wording; booklet references omitted per the ANES web spec). Variable names, codes and labels were checked against the ANES 2024 full-release codebook (8 Aug 2025) and questionnaire, and the CES 2024 guide and pre-election questionnaire (Dataverse V9). `direction` +1 means a higher substantive code points to the dimension's + pole (right / traditional / cost-first). `steps` maps each substantive code to an integer 0-6 used for composites. See data/SOURCES.md.",
+  "version": "us-2024.1",
+  "sources": {
+    "anes2024": {
+      "name": "ANES 2024 Time Series Study, full release",
+      "short": "ANES 2024",
+      "release": "August 8, 2025 version",
+      "url": "https://electionstudies.org/data-center/2024-time-series-study/",
+      "expectedFile": "data/raw/anes_timeseries_2024_csv_20250808.csv",
+      "idVariable": "V240001",
+      "weight": "V240108a",
+      "weightNote": "Pre-election full sample (fresh in-person + fresh web + panel), excluding the paper (PAPI) cases, which received a differently worded abortion item and are coded -1 on several of these variables. All items here are pre-election, so a pre-election weight applies (User Guide, 'Weight variable selection').",
+      "population": "U.S. adult citizens",
+      "citation": "American National Election Studies. 2025. ANES 2024 Time Series Study Full Release [dataset and documentation]. August 8, 2025 version. www.electionstudies.org"
+    },
+    "ces2024": {
+      "name": "Cooperative Election Study Common Content, 2024",
+      "short": "CES 2024",
+      "release": "Harvard Dataverse V9 (final release)",
+      "url": "https://doi.org/10.7910/DVN/X11EP6",
+      "expectedFile": "data/raw/CCES24_Common_OUTPUT_vv_topost_final.csv",
+      "idVariable": "caseid",
+      "weight": "commonweight",
+      "weightNote": "The CES guide recommends commonweight to characterize adult Americans using pre-election items.",
+      "population": "U.S. adults",
+      "citation": "Schaffner, Brian; Shih, Marissa; Ansolabehere, Stephen; Pope, Jeremy, 2025, \"Cooperative Election Study Common Content, 2024\", https://doi.org/10.7910/DVN/X11EP6, Harvard Dataverse, V9."
+    }
+  },
+  "items": [
+    {
+      "id": "anes_libcon",
+      "source": "anes2024",
+      "year": 2024,
+      "variable": "V241177",
+      "questionId": "LIBCPRE_LCINT / LIBCPRE_LCSELF",
+      "intro": "We hear a lot of talk these days about liberals and conservatives. Here is a seven-point scale on which the political views that people might hold are arranged from extremely liberal to extremely conservative.",
+      "question": "Where would you place yourself on this scale, or haven’t you thought much about this?",
+      "format": "scale7",
+      "options": [
+        { "code": 1, "label": "Extremely liberal" },
+        { "code": 2, "label": "Liberal" },
+        { "code": 3, "label": "Slightly liberal" },
+        { "code": 4, "label": "Moderate; middle of the road" },
+        { "code": 5, "label": "Slightly conservative" },
+        { "code": 6, "label": "Conservative" },
+        { "code": 7, "label": "Extremely conservative" }
+      ],
+      "offeredNonSubstantive": [{ "code": 99, "label": "Haven’t thought much about this" }],
+      "missingCodes": [-9, -8, -4],
+      "dimension": "self",
+      "direction": 1,
+      "composite": null
+    },
+    {
+      "id": "anes_services",
+      "source": "anes2024",
+      "year": 2024,
+      "variable": "V241239",
+      "questionId": "SPSRVPR_SSINTRO / SPSRVPR_SSSELF",
+      "intro": "Some people think the government should provide fewer services even in areas such as health and education in order to reduce spending. Suppose these people are at one end of a scale, at point 1. Other people feel it is important for the government to provide many more services even if it means an increase in spending. Suppose these people are at the other end, at point 7. And, of course, some other people have opinions somewhere in between, at points 2, 3, 4, 5 or 6.",
+      "question": "Where would you place yourself on this scale, or haven’t you thought much about this?",
+      "format": "scale7",
+      "options": [
+        { "code": 1, "label": "Government should provide many fewer services" },
+        { "code": 2, "label": "" },
+        { "code": 3, "label": "" },
+        { "code": 4, "label": "" },
+        { "code": 5, "label": "" },
+        { "code": 6, "label": "" },
+        { "code": 7, "label": "Government should provide many more services" }
+      ],
+      "offeredNonSubstantive": [{ "code": 99, "label": "Haven’t thought much about this" }],
+      "missingCodes": [-9, -8, -4],
+      "dimension": "econ",
+      "direction": -1,
+      "composite": "econ"
+    },
+    {
+      "id": "anes_insurance",
+      "source": "anes2024",
+      "year": 2024,
+      "variable": "V241245",
+      "questionId": "INSPRE_INSINTRO / INSPRE_INSSELF",
+      "intro": "There is much concern about the rapid rise in medical and hospital costs. Some people feel there should be a government insurance plan which would cover all medical and hospital expenses for everyone. Suppose these people are at one end of a scale, at point 1. Others feel that all medical expenses should be paid by individuals through private insurance plans like Blue Cross or other company paid plans. Suppose these people are at the other end, at point 7. And, of course, some other people have opinions somewhere in between, at points 2, 3, 4, 5, or 6.",
+      "question": "Where would you place yourself on this scale, or haven’t you thought much about this?",
+      "format": "scale7",
+      "options": [
+        { "code": 1, "label": "Government insurance plan" },
+        { "code": 2, "label": "" },
+        { "code": 3, "label": "" },
+        { "code": 4, "label": "" },
+        { "code": 5, "label": "" },
+        { "code": 6, "label": "" },
+        { "code": 7, "label": "Private insurance plan" }
+      ],
+      "offeredNonSubstantive": [{ "code": 99, "label": "Haven’t thought much about this" }],
+      "missingCodes": [-9, -8, -4, -1],
+      "dimension": "econ",
+      "direction": 1,
+      "composite": "econ",
+      "neutralityNote": "Names a private insurer (Blue Cross) as an example. It is kept verbatim because percentiles are only valid for the exact source wording; it names no party or politician."
+    },
+    {
+      "id": "anes_jobs",
+      "source": "anes2024",
+      "year": 2024,
+      "variable": "V241252",
+      "questionId": "GUARPR_GUARINT / GUARPR_GUARSELF",
+      "intro": "Some people feel the government in Washington should see to it that every person has a job and a good standard of living. Suppose these people are at one end of a scale, at point 1. Others think the government should just let each person get ahead on their own. Suppose these people are at the other end, at point 7. And, of course, some other people have opinions somewhere in between, at points 2, 3, 4, 5, or 6.",
+      "question": "Where would you place yourself on this scale, or haven’t you thought much about this?",
+      "format": "scale7",
+      "options": [
+        { "code": 1, "label": "Government should see to jobs and standard of living" },
+        { "code": 2, "label": "" },
+        { "code": 3, "label": "" },
+        { "code": 4, "label": "" },
+        { "code": 5, "label": "" },
+        { "code": 6, "label": "" },
+        { "code": 7, "label": "Government should let each person get ahead on own" }
+      ],
+      "offeredNonSubstantive": [{ "code": 99, "label": "Haven’t thought much about this" }],
+      "missingCodes": [-9, -8, -4, -1],
+      "dimension": "econ",
+      "direction": 1,
+      "composite": "econ"
+    },
+    {
+      "id": "anes_envbus",
+      "source": "anes2024",
+      "year": 2024,
+      "variable": "V241258",
+      "questionId": "ENVBUS_ENVBUSINT / ENVBUS_ENVBUSSELF",
+      "intro": "Some people think we need much tougher government regulations on business in order to protect the environment. Suppose these people are at one end of a scale, at point 1. Others think that current regulations to protect the environment are already too much of a burden on business. Suppose these people are at the other end, at point 7. And, of course, some other people have opinions somewhere in between, at points 2,3,4,5, or 6.",
+      "question": "Where would you place yourself on this scale, or haven’t you thought much about this?",
+      "format": "scale7",
+      "options": [
+        { "code": 1, "label": "Tougher regulations on business needed to protect environment" },
+        { "code": 2, "label": "" },
+        { "code": 3, "label": "" },
+        { "code": 4, "label": "" },
+        { "code": 5, "label": "" },
+        { "code": 6, "label": "" },
+        { "code": 7, "label": "Regulations to protect environment already too much a burden on business" }
+      ],
+      "offeredNonSubstantive": [{ "code": 99, "label": "Haven’t thought much about this" }],
+      "missingCodes": [-9, -8, -4, -1],
+      "dimension": "climate",
+      "direction": 1,
+      "composite": null
+    },
+    {
+      "id": "anes_abortion",
+      "source": "anes2024",
+      "year": 2024,
+      "variable": "V241248",
+      "questionId": "ABRTPRE_ABRTINTRO / ABRTPRE_ABRTSELF",
+      "intro": "Some people feel abortion should always be permitted without restrictions. Suppose these people are at one end of a scale, at point 1. Others feel that abortion should never be permitted. Suppose these people are at the other end, at point 7. And, of course, some other people have opinions somewhere in between, at points 2, 3, 4, 5, or 6.",
+      "question": "Where would you place yourself on this scale, or haven’t you thought much about this?",
+      "format": "scale7",
+      "options": [
+        { "code": 1, "label": "Abortion should always be permitted without restrictions" },
+        { "code": 2, "label": "" },
+        { "code": 3, "label": "" },
+        { "code": 4, "label": "" },
+        { "code": 5, "label": "" },
+        { "code": 6, "label": "" },
+        { "code": 7, "label": "Abortion should never be permitted" }
+      ],
+      "offeredNonSubstantive": [{ "code": 99, "label": "Haven’t thought much about this" }],
+      "missingCodes": [-9, -8, -4, -1],
+      "dimension": "social",
+      "direction": 1,
+      "composite": "social"
+    },
+    {
+      "id": "anes_trans_bathroom",
+      "source": "anes2024",
+      "year": 2024,
+      "variable": "V241372x",
+      "components": ["V241370", "V241371"],
+      "questionId": "TRANSPOLICY_RESTRM / TRANSPOLICY_RESTRMSTR",
+      "intro": null,
+      "question": "Do you favor, oppose, or neither favor nor oppose allowing transgender people to use public bathrooms that match the gender they identify with?",
+      "format": "branch",
+      "branch": {
+        "first": [
+          { "code": 1, "label": "Favor" },
+          { "code": 2, "label": "Oppose" },
+          { "code": 3, "label": "Neither favor nor oppose" }
+        ],
+        "followUp": {
+          "1": {
+            "question": "Do you favor that a great deal, a moderate amount, or a little?",
+            "options": [
+              { "code": 1, "label": "A great deal", "summary": 1 },
+              { "code": 2, "label": "A moderate amount", "summary": 2 },
+              { "code": 3, "label": "A little", "summary": 3 }
+            ]
+          },
+          "2": {
+            "question": "Do you oppose that a little, a moderate amount, or a great deal?",
+            "options": [
+              { "code": 3, "label": "A little", "summary": 5 },
+              { "code": 2, "label": "A moderate amount", "summary": 6 },
+              { "code": 1, "label": "A great deal", "summary": 7 }
+            ]
+          }
+        },
+        "terminal": { "3": 4 }
+      },
+      "options": [
+        { "code": 1, "label": "Favor a great deal" },
+        { "code": 2, "label": "Favor a moderate amount" },
+        { "code": 3, "label": "Favor a little" },
+        { "code": 4, "label": "Neither favor nor oppose" },
+        { "code": 5, "label": "Oppose a little" },
+        { "code": 6, "label": "Oppose a moderate amount" },
+        { "code": 7, "label": "Oppose a great deal" }
+      ],
+      "offeredNonSubstantive": [],
+      "missingCodes": [-2, -1],
+      "dimension": "social",
+      "direction": 1,
+      "composite": "social",
+      "neutralityNote": "Names a group (transgender people) because the policy concerns that group, as does instrument item S6; it names no party, politician or racial group."
+    },
+    {
+      "id": "anes_gay_jobs",
+      "source": "anes2024",
+      "year": 2024,
+      "variable": "V241378x",
+      "components": ["V241376", "V241377"],
+      "questionId": "GAYRT_GDISCREV / GAYRT_GDISCSTREV",
+      "intro": null,
+      "question": "Do you favor or oppose laws to protect gays and lesbians against job discrimination?",
+      "format": "branch",
+      "branch": {
+        "first": [
+          { "code": 1, "label": "Favor" },
+          { "code": 2, "label": "Oppose" }
+        ],
+        "followUp": {
+          "1": {
+            "question": "Do you favor such laws strongly or not strongly?",
+            "options": [
+              { "code": 1, "label": "Strongly", "summary": 1 },
+              { "code": 2, "label": "Not strongly", "summary": 2 }
+            ]
+          },
+          "2": {
+            "question": "Do you oppose such laws strongly or not strongly?",
+            "options": [
+              { "code": 1, "label": "Strongly", "summary": 4 },
+              { "code": 2, "label": "Not strongly", "summary": 3 }
+            ]
+          }
+        },
+        "terminal": {}
+      },
+      "options": [
+        { "code": 1, "label": "Favor strongly" },
+        { "code": 2, "label": "Favor not strongly" },
+        { "code": 3, "label": "Oppose not strongly" },
+        { "code": 4, "label": "Oppose strongly" }
+      ],
+      "offeredNonSubstantive": [],
+      "missingCodes": [-2, -1],
+      "dimension": "social",
+      "direction": 1,
+      "composite": "social",
+      "stepScale": 2,
+      "neutralityNote": "Names a group (gays and lesbians) because the policy concerns that group, as does instrument item S3; it names no party, politician or racial group."
+    },
+    {
+      "id": "ces_medicaid",
+      "source": "ces2024",
+      "year": 2024,
+      "variable": "CC24_328e",
+      "questionId": "CC24_328grid",
+      "intro": "Do you support or oppose each of the following proposals?",
+      "question": "Expand Medicaid to cover individuals making less than $25,000 and families making less than $40,000 a year.",
+      "format": "binary",
+      "options": [
+        { "code": 1, "label": "Support" },
+        { "code": 2, "label": "Oppose" }
+      ],
+      "offeredNonSubstantive": [],
+      "missingCodes": [8, 9],
+      "dimension": "econ",
+      "direction": 1,
+      "composite": null
+    },
+    {
+      "id": "ces_epa_co2",
+      "source": "ces2024",
+      "year": 2024,
+      "variable": "CC24_326a",
+      "questionId": "CC24_326grid",
+      "intro": "Do you support or oppose each of the following proposals?",
+      "question": "Give the Environmental Protection Agency power to regulate carbon dioxide emissions",
+      "format": "binary",
+      "options": [
+        { "code": 1, "label": "Support" },
+        { "code": 2, "label": "Oppose" }
+      ],
+      "offeredNonSubstantive": [],
+      "missingCodes": [8, 9],
+      "dimension": "climate",
+      "direction": 1,
+      "composite": null
+    },
+    {
+      "id": "ces_legal_status",
+      "source": "ces2024",
+      "year": 2024,
+      "variable": "CC24_323a",
+      "questionId": "CC24_323grid",
+      "intro": "What do you think the U.S. government should do about immigration? Do you support or oppose each of the following?",
+      "question": "Grant legal status to all illegal immigrants who have held jobs and paid taxes for at least 3 years, and not been convicted of any felony crimes",
+      "format": "binary",
+      "options": [
+        { "code": 1, "label": "Support" },
+        { "code": 2, "label": "Oppose" }
+      ],
+      "offeredNonSubstantive": [],
+      "missingCodes": [8, 9],
+      "dimension": "social",
+      "direction": 1,
+      "composite": null
+    }
+  ],
+  "composites": {
+    "econ": {
+      "source": "anes2024",
+      "items": ["anes_services", "anes_insurance", "anes_jobs"],
+      "label": "economic",
+      "negWord": "economically left",
+      "posWord": "economically right",
+      "method": "Sum of keyed steps (0-6 per item, 0 = left pole), range 0-18. Respondents are included only if they gave a substantive answer to every item."
+    },
+    "social": {
+      "source": "anes2024",
+      "items": ["anes_abortion", "anes_trans_bathroom", "anes_gay_jobs"],
+      "label": "social",
+      "negWord": "socially progressive",
+      "posWord": "socially traditional",
+      "method": "Sum of keyed steps (0-6 per item, 0 = progressive pole; the 4-point gay-rights summary is stepped 0, 2, 4, 6), range 0-18. Respondents are included only if they gave a substantive answer to every item."
+    }
+  }
+}

@@ -628,3 +628,60 @@ tr.contra td {
     transition: none;
   }
 }
+
+/* benchmark module: visibly separate from the main inventory */
+.bench .ticks i.now {
+  background: var(--ink);
+}
+.bintro {
+  font-family: var(--f-read);
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: 62ch;
+}
+.bstatement {
+  min-height: 0;
+  font-size: clamp(1.25rem, 3.6vw, 1.6rem);
+  max-width: 40ch;
+}
+.scale7 {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+.scale7 .opt {
+  min-height: 56px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 4px;
+}
+.scale7 .opt .t {
+  font-size: 1.1rem;
+}
+.bench-panel {
+  border-style: dashed;
+}
+.pct {
+  font-size: 2.25rem;
+  line-height: 1;
+  color: var(--accent);
+}
+.bcards {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.bcard {
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.bq {
+  font-family: var(--f-read);
+  font-size: 1rem;
+}

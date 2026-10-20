@@ -12,6 +12,17 @@ export interface RunState {
   version?: string;
   /** ISO date (YYYY-MM-DD) the run was completed, for exports. */
   completedOn?: string;
+  /** Optional U.S. benchmark module, run after the results. */
+  benchmark?: BenchmarkState;
+}
+
+export interface BenchmarkState {
+  idx: number;
+  /** For two-step (branch) items: the answer to the first question while the follow-up is shown. */
+  first?: number;
+  /** Item id → source code (summary code for branch items); -1 = skipped. */
+  answers: Record<string, number>;
+  done: boolean;
 }
 
 export const STORE_KEY = 'ideology-inventory-v2';

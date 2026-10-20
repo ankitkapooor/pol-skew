@@ -5,6 +5,7 @@ import { INSTRUMENT_VERSION } from '../instrument/version';
 import { loadRun, saveRun, type RunState } from '../state/storage';
 import { renderIntro } from './intro';
 import { renderQ } from './question';
+import { startBenchmark } from './benchmark';
 import { renderResults } from './results';
 
 let S: RunState | null = loadRun();
@@ -58,6 +59,15 @@ export function showResults(animate: boolean): void {
     retake: () => {
       newRun();
       showQuestion();
+    },
+    openBenchmark: () => {
+      if (!S) return;
+      startBenchmark(S, {
+        done: () => {
+          history.replaceState(null, '', '#benchmark');
+          showResults(false);
+        },
+      });
     },
   });
 }
