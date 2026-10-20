@@ -1,0 +1,594 @@
+<title>Ideology Inventory</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one narrow instrument column; quiz shows one item at a time, results stack summary → compass → axes → short scales → foundations → diagnostics → methods */
+:root{
+  --bg:#ECEEF2; --surface:#F8F9FB; --ink:#14171C; --muted:#5A6170; --line:#D2D6DE;
+  --accent:#2F43C8; --accent-soft:rgba(47,67,200,.12);
+  --good:#1D7A4B; --warn:#9A5C00; --bad:#B3261E;
+  --f-display:"Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --f-read:"Newsreader", Georgia, "Times New Roman", serif;
+  --f-data:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1115; --surface:#171A21; --ink:#E7E9EE; --muted:#9AA1AE; --line:#2B303A;
+  --accent:#8D9BFF; --accent-soft:rgba(141,155,255,.16);
+  --good:#5CC48C; --warn:#E3A43C; --bad:#F2766C; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0F1115; --surface:#171A21; --ink:#E7E9EE; --muted:#9AA1AE; --line:#2B303A;
+  --accent:#8D9BFF; --accent-soft:rgba(141,155,255,.16);
+  --good:#5CC48C; --warn:#E3A43C; --bad:#F2766C; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-display);font-size:16px;line-height:1.5}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:32px 64px;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{margin:0;text-wrap:balance;font-weight:600;letter-spacing:-.01em}
+h1{font-size:clamp(2rem,6vw,3rem);line-height:1.05}
+h2{font-size:1.375rem}
+h3{font-size:1rem}
+p{margin:0}
+.eyebrow{font-family:var(--f-data);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lede{font-family:var(--f-read);font-size:1.2rem;line-height:1.5;max-width:62ch}
+.muted{color:var(--muted)}
+.small{font-size:.875rem}
+.mono{font-family:var(--f-data);font-variant-numeric:tabular-nums}
+.stack{display:flex;flex-direction:column;gap:12px}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{font:inherit;font-weight:600;border:1px solid var(--ink);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:999px;cursor:pointer;transition:transform .15s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--ink)}
+.btn:focus-visible,.opt:focus-visible,.nop:focus-visible,.link:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.link{font:inherit;background:none;border:0;color:var(--muted);cursor:pointer;padding:4px 0;text-decoration:underline;text-underline-offset:3px}
+.link:hover{color:var(--ink)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;min-width:0}
+.spec{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.spec div{background:var(--surface);padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+.spec b{font-family:var(--f-data);font-weight:500;font-size:1.25rem;font-variant-numeric:tabular-nums}
+.intro-grid{display:grid;grid-template-columns:1fr 240px;gap:24px;align-items:start}
+.intro-grid > *{min-width:0}
+@media (max-width:640px){.intro-grid{grid-template-columns:1fr}}
+.example-tag{font-family:var(--f-data);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:center;margin-top:6px}
+
+/* quiz */
+.ticks{display:grid;gap:2px;height:6px}
+.ticks i{background:var(--line);border-radius:2px;transition:background .2s}
+.ticks i.done{background:var(--muted)}
+.ticks i.now{background:var(--accent)}
+.qhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.statement{font-family:var(--f-read);font-size:clamp(1.45rem,4.4vw,2.05rem);line-height:1.28;min-height:5.2em;font-weight:400;max-width:30ch}
+.statement .w{display:inline-block;opacity:0;transform:translateY(.35em);animation:rise .42s cubic-bezier(.2,.7,.2,1) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.opt{font:inherit;text-align:left;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:14px 12px;cursor:pointer;display:flex;flex-direction:column;gap:6px;min-height:84px;transition:border-color .15s, background .15s, transform .15s}
+.opt:hover{border-color:var(--ink);transform:translateY(-1px)}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt .k{font-family:var(--f-data);font-size:.72rem;color:var(--muted)}
+.opt .t{font-weight:500;line-height:1.25}
+.scale.list{grid-template-columns:1fr}
+.scale.list .opt{min-height:0;flex-direction:row;align-items:baseline;gap:12px}
+.alt{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.nop{font:inherit;background:transparent;border:1px dashed var(--line);color:var(--muted);border-radius:999px;padding:8px 16px;cursor:pointer}
+.nop:hover{color:var(--ink);border-color:var(--ink)}
+.nop.sel{border-style:solid;border-color:var(--accent);color:var(--ink);background:var(--accent-soft)}
+@media (max-width:620px){
+  .scale{grid-template-columns:1fr}
+  .opt{min-height:0;flex-direction:row;align-items:baseline;gap:12px;padding:12px 14px}
+}
+.kbd{font-family:var(--f-data);font-size:.75rem;color:var(--muted)}
+
+/* results */
+.verdict{display:flex;flex-direction:column;gap:10px}
+.verdict h1{font-size:clamp(1.9rem,5.6vw,2.7rem)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:var(--f-data);font-size:.78rem;border:1px solid var(--line);border-radius:999px;padding:4px 10px;display:inline-flex;gap:6px;align-items:center;background:var(--surface);white-space:nowrap}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.chip.good .dot{background:var(--good)} .chip.warn .dot{background:var(--warn)} .chip.bad .dot{background:var(--bad)} .chip.acc .dot{background:var(--accent)}
+.res-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:680px){.res-grid{grid-template-columns:1fr}}
+.compass svg{width:100%;height:auto;display:block;max-width:420px;margin:0 auto}
+.axes{display:flex;flex-direction:column;gap:20px}
+.axis{display:flex;flex-direction:column;gap:8px}
+.axis-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.track{position:relative;height:30px}
+.track .rail{position:absolute;left:0;right:0;top:14px;height:2px;background:var(--line)}
+.track .mid{position:absolute;left:50%;top:6px;width:1px;height:18px;background:var(--muted);opacity:.6}
+.track .ci{position:absolute;top:9px;height:12px;background:var(--accent-soft);border:1px solid var(--accent);border-radius:6px;transition:left .8s cubic-bezier(.2,.7,.2,1), width .8s cubic-bezier(.2,.7,.2,1)}
+.track .pt{position:absolute;top:7px;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px var(--surface);transition:left .9s cubic-bezier(.2,.7,.2,1)}
+.poles{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);gap:12px}
+.poles span:last-child{text-align:right}
+.mf{display:grid;grid-template-columns:110px minmax(0,1fr) 72px;gap:10px 12px;align-items:center}
+.mf .bar{height:12px;position:relative;background:linear-gradient(var(--line),var(--line)) center/100% 2px no-repeat}
+.mf .bar::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--muted)}
+.mf .bar i{position:absolute;top:0;bottom:0;border-radius:3px;background:var(--ink);transition:left .9s cubic-bezier(.2,.7,.2,1), width .9s cubic-bezier(.2,.7,.2,1)}
+.mf .bar.ind i{background:var(--accent)}
+.mf-scale{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-left:122px;margin-right:84px}
+@media (max-width:420px){.mf{grid-template-columns:90px minmax(0,1fr) 64px}.mf-scale{margin-left:102px;margin-right:76px}}
+.diag{display:grid;grid-template-columns:1fr auto;gap:10px 16px;align-items:baseline;margin:0}
+.diag dt{font-weight:500}
+.diag dd{margin:0;text-align:right}
+.diag .note{grid-column:1/-1;color:var(--muted);font-size:.875rem;margin-top:-6px}
+details{border-top:1px solid var(--line);padding-top:14px}
+summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-family:var(--f-data);color:var(--muted)}
+details[open] summary::after{content:"−"}
+.tablewrap{overflow-x:auto;margin-top:12px}
+table{border-collapse:collapse;width:100%;font-size:.875rem;min-width:560px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--f-data);font-weight:500;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+td.num{font-family:var(--f-data);font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.contra td{background:var(--accent-soft)}
+.prose{display:flex;flex-direction:column;gap:12px;max-width:65ch}
+.prose p,.prose li{font-family:var(--f-read);font-size:1.05rem;line-height:1.55}
+.prose ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px}
+.prose a{color:var(--accent)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:.875rem}
+.fade{animation:fadein .35s ease both}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){
+  .statement .w{animation:none;opacity:1;transform:none}
+  .fade{animation:none}
+  .track .ci,.track .pt,.mf .bar i,.btn,.opt{transition:none}
+}
+</style>
+
+<main class="wrap" id="app"></main>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ---------- Item bank ----------
+   Ideology and short scales are built from matched pairs: two statements on the same topic,
+   worded with equal strength, pointing to opposite poles. dir = +1 means agreeing moves toward the
+   scale's "+" pole (right / traditional / order-and-authority / growth-first / national / populist). */
+const P = (pair,dim,R,L) => [{id:pair+'a',pair,dim,dir:1,text:R},{id:pair+'b',pair,dim,dir:-1,text:L}];
+const ITEMS = [
+  // Economic
+  ...P('E1','econ','Taxes on high earners and businesses should be kept low, even if that means fewer public services.','Taxes on high earners and businesses should be raised to pay for more public services.'),
+  ...P('E2','econ','Businesses should be free to operate with few government rules.','Businesses should operate under strict government rules that protect the public.'),
+  ...P('E3','econ','People should mainly pay for their own healthcare, through work or private insurance.','Healthcare should be provided to everyone and paid for through taxes.'),
+  ...P('E4','econ','Wages and working hours should be left to employers and workers to agree, with little government involvement.','The government should set a minimum wage high enough for a full-time worker to live on.'),
+  ...P('E5','econ','Utilities such as electricity and water are best run by private companies.','Utilities such as electricity and water are best run by the government.'),
+  ...P('E6','econ','Government support for people who are out of work should be kept modest.','Government support for people who are out of work should be generous.'),
+  // Social / cultural
+  ...P('S1','social','Society is better off when people stick to long-standing traditions.','Society is better off when people feel free to break with tradition.'),
+  ...P('S2','social','Religious teachings should guide a country’s laws.','A country’s laws should be kept separate from religious teachings.'),
+  ...P('S3','social','Marriage should be only between a man and a woman.','Same-sex couples should have the same right to marry as opposite-sex couples.'),
+  ...P('S4','social','Abortion should be illegal in all or most cases.','Abortion should be legal in all or most cases.'),
+  ...P('S5','social','People who move to a country should adopt its customs and way of life.','People who move to a country should be free to keep their own customs and way of life.'),
+  ...P('S6','social','A person’s legal sex should always be the sex recorded at birth.','People should be able to change their legal sex to match their gender identity.'),
+  // State authority vs civil liberty
+  ...P('A1','auth','In a national emergency, the head of government should be able to act without approval from courts or the legislature.','Even in a national emergency, courts and the legislature should be able to overrule the head of government.'),
+  ...P('A2','auth','The government should be able to ban speech that most people find deeply offensive.','Speech that most people find deeply offensive should still be legal.'),
+  ...P('A3','auth','Government monitoring of private communications is acceptable when it helps prevent terrorism.','The government should not monitor anyone’s private communications without a court warrant.'),
+  ...P('A4','auth','Police should have broad powers to break up protests that disrupt public life.','Peaceful protests should be allowed even when they disrupt public life.'),
+  ...P('A5','auth','People who commit crimes should receive harsher punishments than they do now.','The justice system should focus more on rehabilitation than on punishment.'),
+  ...P('A6','auth','The government should restrict activities that are mainly dangerous to the people who choose them.','Adults should be free to take risks that mainly affect themselves.'),
+  // Short scales
+  ...P('C1','climate','Keeping energy cheap matters more than moving quickly away from fossil fuels.','Moving quickly away from fossil fuels matters more than keeping energy cheap.'),
+  ...P('C2','climate','Climate policy should rely mainly on voluntary action by businesses and individuals.','Climate policy should rely mainly on binding government limits on emissions.'),
+  ...P('G1','global','Imports should be limited to protect jobs in domestic industries.','Trade between countries should be as free as possible.'),
+  ...P('G2','global','A country should act on its own interests, even when allies and international bodies disagree.','A country should work through international agreements, even when that limits its choices.'),
+  ...P('Q1','populism','Ordinary citizens, not politicians or experts, should make the most important political decisions.','The most important political decisions are best left to elected representatives and experts.'),
+  ...P('Q2','populism','Politicians mostly serve the interests of a powerful elite.','Most politicians genuinely try to serve the public.'),
+  // Moral foundations (six MFQ-2 constructs, original wording, 3 items each)
+  {id:'M1',dim:'mf',f:'care',text:'It is important to comfort people who are going through a hard time.'},
+  {id:'M2',dim:'mf',f:'care',text:'Causing someone to suffer is one of the worst things a person can do.'},
+  {id:'M3',dim:'mf',f:'care',text:'We should look out for those who cannot protect themselves.'},
+  {id:'M4',dim:'mf',f:'equality',text:'The world would be better if wealth were shared more equally.'},
+  {id:'M5',dim:'mf',f:'equality',text:'A society is fairer when the gap between rich and poor is small.'},
+  {id:'M6',dim:'mf',f:'equality',text:'Everyone should have a similar standard of living, whatever their background.'},
+  {id:'M7',dim:'mf',f:'proportionality',text:'People should be rewarded in proportion to what they contribute.'},
+  {id:'M8',dim:'mf',f:'proportionality',text:'It is fair that people who work harder end up with more.'},
+  {id:'M9',dim:'mf',f:'proportionality',text:'People who make no effort should not receive the same as those who do.'},
+  {id:'M10',dim:'mf',f:'loyalty',text:'People should stand by their community or country even when it makes mistakes.'},
+  {id:'M11',dim:'mf',f:'loyalty',text:'Betraying your group is one of the worst things a person can do.'},
+  {id:'M12',dim:'mf',f:'loyalty',text:'It is important to be a loyal member of the groups you belong to.'},
+  {id:'M13',dim:'mf',f:'authority',text:'Respecting legitimate authority is necessary for society to function.'},
+  {id:'M14',dim:'mf',f:'authority',text:'Traditions passed down by elders deserve respect, even when their purpose isn’t clear.'},
+  {id:'M15',dim:'mf',f:'authority',text:'Children should be taught to respect their elders and the people in charge.'},
+  {id:'M16',dim:'mf',f:'purity',text:'Some acts are wrong because they are degrading, even if no one is harmed.'},
+  {id:'M17',dim:'mf',f:'purity',text:'People should keep their bodies and minds free of corrupting influences.'},
+  {id:'M18',dim:'mf',f:'purity',text:'Some things are sacred and should not be mocked or treated lightly.'},
+];
+const ATTN = {id:'AC',type:'attn',text:'To show you’re reading each statement, choose “Somewhat disagree” for this one.'};
+const INFREQ = {id:'IF',type:'infreq',text:'I have never used a phone or a computer.'};
+const SELF = {id:'SP',type:'self',text:'Overall, how would you describe your political views?'};
+const LIKERT = ['Strongly disagree','Somewhat disagree','Neither agree nor disagree','Somewhat agree','Strongly agree'];
+const SELF_OPTS = ['Very left / liberal','Left / liberal','Slightly left','Centre / moderate','Slightly right','Right / conservative','Very right / conservative'];
+const MF_NAMES = {care:'Care',equality:'Equality',proportionality:'Proportionality',loyalty:'Loyalty',authority:'Authority',purity:'Purity'};
+const DIMS = {
+  econ:{name:'Economic',neg:'Left: redistribution, public provision',pos:'Right: markets, lower taxes',negW:'left',posW:'right'},
+  social:{name:'Social & cultural',neg:'Progressive: change, pluralism',pos:'Traditional: custom, religion',negW:'progressive',posW:'traditional'},
+  auth:{name:'State authority',neg:'Civil-libertarian: limits on state power',pos:'Order & authority: strong state',negW:'civil-libertarian',posW:'order-and-authority'},
+  climate:{name:'Climate & energy',neg:'Climate action first',pos:'Cost and growth first',negW:'climate-first',posW:'cost-first'},
+  global:{name:'Trade & sovereignty',neg:'Open, internationalist',pos:'National, protectionist',negW:'internationalist',posW:'national-first'},
+  populism:{name:'Populism',neg:'Trusts representatives & experts',pos:'People versus the elite',negW:'pluralist',posW:'populist'}
+};
+const CORE = ['econ','social','auth'], SHORT = ['climate','global','populism'];
+const STORE_KEY = 'ideology-inventory-v2';
+
+/* ---------- State ---------- */
+let S = load();
+function load(){ try{ const s = JSON.parse(localStorage.getItem(STORE_KEY)); return s && s.order ? s : null }catch(e){ return null } }
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(S)) }catch(e){} }
+const SPECIAL = {AC:ATTN, IF:INFREQ, SP:SELF};
+const byId = id => SPECIAL[id] || ITEMS.find(i=>i.id===id);
+const wordCount = t => t.trim().split(/\s+/).length;
+
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]] } return a }
+function orderOK(ids){
+  for(let i=2;i<ids.length;i++){ const d=k=>byId(ids[k]).dim; if(d(i)===d(i-1)&&d(i)===d(i-2)) return false }
+  const pos={}; ids.forEach((id,i)=>{ const p=byId(id).pair; if(p){ if(pos[p]!==undefined && i-pos[p]<8) pos.bad=1; pos[p]=i } });
+  return !pos.bad;
+}
+function newRun(){
+  // Random order with two constraints: no scale three times in a row, and the two halves of a pair at least 8 items apart.
+  let ids;
+  for(let t=0;t<5000;t++){ ids = shuffle(ITEMS.map(i=>i.id)); if(orderOK(ids)) break }
+  ids.splice(20 + Math.floor(Math.random()*10), 0, 'AC');
+  ids.splice(44 + Math.floor(Math.random()*10), 0, 'IF');
+  ids.push('SP');
+  S = {order:ids, idx:0, answers:{}, times:{}, words:{}, done:false};
+  save();
+}
+
+/* ---------- Scoring ---------- */
+const mean = a => a.reduce((x,y)=>x+y,0)/a.length;
+const sd = a => { if(a.length<2) return 0; const m=mean(a); return Math.sqrt(a.reduce((x,y)=>x+(y-m)**2,0)/(a.length-1)) };
+const valid = v => v>=1 && v<=5;
+
+function scoreDim(dim, A){
+  const its = ITEMS.filter(i=>i.dim===dim);
+  const k = [];
+  its.forEach(i=>{ const v=A[i.id]; if(valid(v)) k.push((v-3)*i.dir) });
+  const n=k.length, need=Math.ceil(its.length*0.6);
+  if(n<need) return {n,total:its.length,ok:false};
+  const m=mean(k), s=Math.max(sd(k),0.5), half=1.96*s/Math.sqrt(n)*50;
+  const absMean=mean(k.map(Math.abs));
+  // contradictions: agreeing (or disagreeing) with both sides of the same pair
+  const pairs=[...new Set(its.map(i=>i.pair))]; let contra=0, both=0;
+  pairs.forEach(p=>{ const a=A[p+'a'], b=A[p+'b']; if(valid(a)&&valid(b)){ both++; if((a>=4&&b>=4)||(a<=2&&b<=2)) contra++ } });
+  return {n,total:its.length,ok:true,score:m*50,lo:Math.max(-100,m*50-half),hi:Math.min(100,m*50+half),half,
+    consistency: absMean===0?0:Math.abs(m)/absMean, contra, both};
+}
+function scoreMF(A){
+  const all = ITEMS.filter(i=>i.dim==='mf').map(i=>A[i.id]).filter(valid);
+  const personal = all.length? mean(all) : null;
+  const out={personal, f:{}};
+  Object.keys(MF_NAMES).forEach(f=>{
+    const v=ITEMS.filter(i=>i.f===f).map(i=>A[i.id]).filter(valid);
+    out.f[f] = v.length>=2 ? {raw:mean(v), rel:mean(v)-personal} : null;
+  });
+  const g=ks=>{ const v=ks.map(k=>out.f[k]).filter(Boolean).map(x=>x.raw); return v.length?mean(v):null };
+  out.ind=g(['care','equality']); out.bin=g(['loyalty','authority','purity']);
+  out.diff=(out.ind!=null&&out.bin!=null)? out.ind-out.bin : null;
+  return out;
+}
+function tooFastShare(A,T,W){
+  // An answer counts as too fast if it came quicker than reading the statement at 400 words a minute plus half a second.
+  const ids=Object.keys(T).filter(id=>id!=='SP' && T[id]>0 && W[id]);
+  if(!ids.length) return 0;
+  return ids.filter(id=> T[id]/1000 < 0.5 + W[id]*0.15).length / ids.length;
+}
+function quality(A,T,W){
+  const r={}, bad=[], warn=[];
+  const set=(k,o)=>{ r[k]=o; if(o.state==='bad') bad.push(k); if(o.state==='warn') warn.push(k) };
+  set('attn',{label:'Attention check', value:A.AC===2?'Passed':'Missed', state:A.AC===2?'good':'bad',
+    note:'One statement asked for a specific answer.'});
+  set('infreq',{label:'Implausible-statement check', value:valid(A.IF)&&A.IF<=2?'Passed':'Missed', state:valid(A.IF)&&A.IF<=2?'good':'bad',
+    note:'One statement (never having used a phone or computer) can’t be true for anyone taking this online.'});
+  let contra=0, both=0;
+  [...CORE,...SHORT].forEach(d=>{ const s=scoreDim(d,A); if(s.both!==undefined){ contra+=s.contra; both+=s.both } });
+  const cr = both? contra/both : 0;
+  set('contra',{label:'Contradictory pairs', value:`${contra} of ${both}`, state:cr>0.3?'bad':cr>0.15?'warn':'good',
+    note:'Each pair puts the same topic both ways. Agreeing with both sides, or disagreeing with both, is a sign of careless or acquiescent answering. Contradicted pairs are highlighted in the item table.'});
+  const balanced = ITEMS.filter(i=>i.pair && valid(A[i.id])).map(i=>A[i.id]-3);
+  const acq = balanced.length? mean(balanced) : 0;
+  set('acq',{label:'Agreement tendency', value:(acq>=0?'+':'')+acq.toFixed(2), state:Math.abs(acq)>0.75?'bad':Math.abs(acq)>0.45?'warn':'good',
+    note:'Average raw agreement across the 48 paired statements before scoring (−2 to +2). Near 0 is ideal. Because every pair is balanced, this tendency mostly cancels out of your scores.'});
+  const likert = ITEMS.map(i=>A[i.id]).filter(valid);
+  const spread = sd(likert);
+  set('spread',{label:'Response variety', value:spread.toFixed(2), state:spread<0.6?'bad':spread<0.85?'warn':'good',
+    note:'Spread of your answers on the 1–5 scale. Very low spread suggests the same option was picked repeatedly.'});
+  const fast = tooFastShare(A,T,W);
+  set('speed',{label:'Answers faster than reading speed', value:Math.round(fast*100)+'%', state:fast>0.3?'bad':fast>0.15?'warn':'good',
+    note:'Share of answers given faster than reading the statement at 400 words a minute plus half a second. Only your first answer to each statement is timed.'});
+  const missing = ITEMS.filter(i=>A[i.id]===0).length;
+  set('miss',{label:'“No opinion” answers', value:`${missing} of ${ITEMS.length}`, state:missing>14?'bad':missing>7?'warn':'good',
+    note:'Left out of scoring instead of counted as neutral, so they widen the bands on the affected scales.'});
+  const grade = bad.length===0&&warn.length<=1?{t:'High',s:'good'}: bad.length<=1?{t:'Moderate',s:'warn'}:{t:'Low',s:'bad'};
+  return {r,grade};
+}
+// Provisional cutoffs, expressed in answer terms: ±15 ≈ within a third of a step of neutral on average; ±50 ≈ "somewhat agree" with one side on average.
+function strength(s){ const a=Math.abs(s); return a<15?'centrist':a<40?'leaning':a<70?'moderately':'strongly' }
+function axisWord(dim,s){
+  if(Math.abs(s)<15) return dim==='econ'||dim==='social'||dim==='auth'?'centrist':'near the middle';
+  const side = s<0?DIMS[dim].negW:DIMS[dim].posW, st=strength(s);
+  return (st==='leaning'?'leaning ':st+' ')+side;
+}
+function verdict(e,so){
+  const ec=Math.abs(e)<15, sc=Math.abs(so)<15;
+  if(ec&&sc) return {title:'Centrist', body:'Your economic and social answers both sit close to the middle of the scale. You may hold genuinely moderate views, or mix positions from different sides topic by topic.'};
+  if(ec) return {title:'Economically centrist, socially '+(so<0?'progressive':'traditional'), body:'Your clearest signal is on social and cultural questions; on economics you sit near the middle.'};
+  if(sc) return {title:'Economically '+(e<0?'left':'right')+', socially centrist', body:'Your clearest signal is on economic questions; on social and cultural issues you sit near the middle.'};
+  if(e<0&&so<0) return {title:'Left-progressive', body:'You favour a larger economic role for government together with socially progressive positions.'};
+  if(e>0&&so>0) return {title:'Conservative', body:'You favour markets and a smaller economic state together with more traditional social positions.'};
+  if(e>0&&so<0) return {title:'Libertarian-leaning', body:'You combine market-oriented economics with socially progressive views, a profile that a single left–right scale captures poorly.'};
+  return {title:'Communitarian', body:'You combine support for an active economic state with more traditional social views. This profile is common in many countries, including India, but disappears on one-axis measures.'};
+}
+function selfRead(A,e,so){
+  if(!A.SP || !e.ok || !so.ok) return '';
+  const lab = SELF_OPTS[A.SP-1].toLowerCase(), sv=(A.SP-4)/3*100;
+  const E=Math.round(e.score), So=Math.round(so.score);
+  if(Math.sign(e.score)!==Math.sign(so.score) && Math.abs(e.score)>=25 && Math.abs(so.score)>=25)
+    return `You described yourself as <b>${lab}</b>. Your economic score (${E>0?'+':''}${E}) and social score (${So>0?'+':''}${So}) point in opposite directions, so no single left–right label can fit both. This mixed pattern is the main reason researchers measure the two separately.`;
+  const de=Math.abs(sv-e.score), ds=Math.abs(sv-so.score);
+  if(Math.min(de,ds)<25){
+    const which = de<ds?'economic':'social';
+    return `You described yourself as <b>${lab}</b>, which matches your ${which} positions closely${Math.max(de,ds)<25?' and your other positions too':''}.`;
+  }
+  const comp=(e.score+so.score)/2, gap=comp-sv;
+  return `You described yourself as <b>${lab}</b>, but your issue positions sit about ${Math.round(Math.abs(gap))} points further ${gap<0?'left / progressive':'right / traditional'}. Political scientists call this a gap between symbolic ideology (the label) and operational ideology (the positions). It is common.`;
+}
+
+/* ---------- Rendering ---------- */
+const app = document.getElementById('app');
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sgn = v => (v>0?'+':'')+Math.round(v);
+
+function compassSVG(e,so,ce,cs,opts={}){
+  const Pd=40, W=360, inner=W-2*Pd;
+  const X=v=>Pd+(v+100)/200*inner, Y=v=>Pd+(100-v)/200*inner;
+  const rect = (ce&&cs)? `<rect x="${X(ce[0])}" y="${Y(cs[1])}" width="${X(ce[1])-X(ce[0])}" height="${Y(cs[0])-Y(cs[1])}" rx="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 3"/>`:'';
+  const grid = [-50,50].map(v=>`<line x1="${X(v)}" y1="${Pd}" x2="${X(v)}" y2="${W-Pd}" stroke="var(--line)"/><line x1="${Pd}" y1="${Y(v)}" x2="${W-Pd}" y2="${Y(v)}" stroke="var(--line)"/>`).join('');
+  const q=(x,y,t,a)=>`<text x="${x}" y="${y}" text-anchor="${a}" font-family="var(--f-data)" font-size="9" letter-spacing=".06em" fill="var(--muted)">${t}</text>`;
+  const lab=(x,y,t,rot)=>`<text x="${x}" y="${y}" text-anchor="middle" font-size="11" fill="var(--ink)" font-family="var(--f-display)"${rot?` transform="rotate(${rot} ${x} ${y})"`:''}>${t}</text>`;
+  return `<svg viewBox="0 0 ${W} ${W}" role="img" aria-label="Two-axis plot of economic and social scores">
+    <rect x="${Pd}" y="${Pd}" width="${inner}" height="${inner}" fill="var(--surface)" stroke="var(--line)"/>
+    ${grid}
+    <line x1="${X(0)}" y1="${Pd}" x2="${X(0)}" y2="${W-Pd}" stroke="var(--muted)" opacity=".7"/>
+    <line x1="${Pd}" y1="${Y(0)}" x2="${W-Pd}" y2="${Y(0)}" stroke="var(--muted)" opacity=".7"/>
+    ${q(Pd+8,Pd+16,'COMMUNITARIAN','start')}${q(W-Pd-8,Pd+16,'CONSERVATIVE','end')}
+    ${q(Pd+8,W-Pd-10,'LEFT-PROGRESSIVE','start')}${q(W-Pd-8,W-Pd-10,'LIBERTARIAN-LEANING','end')}
+    ${lab(W/2,Pd-14,'Socially traditional')}${lab(W/2,W-Pd+24,'Socially progressive')}
+    ${lab(Pd-12,W/2,'Economic left',-90)}${lab(W-Pd+16,W/2,'Economic right',90)}
+    ${rect}
+    <circle id="${opts.id||''}" cx="${opts.animate?X(0):X(e)}" cy="${opts.animate?Y(0):Y(so)}" r="7" fill="var(--accent)" stroke="var(--surface)" stroke-width="3" data-x="${X(e)}" data-y="${Y(so)}" style="transition:cx .9s cubic-bezier(.2,.7,.2,1), cy .9s cubic-bezier(.2,.7,.2,1)"/>
+  </svg>`;
+}
+
+function renderIntro(){
+  const n=Object.keys(S?.answers||{}).length;
+  const resumable = S && !S.done && n>0, hasResult = S && S.done;
+  app.innerHTML = `
+  <header class="stack fade">
+    <span class="eyebrow">Political orientation inventory · ${ITEMS.length+3} items · about 12 minutes</span>
+    <h1>Where do your views actually sit?</h1>
+  </header>
+  <section class="intro-grid fade">
+    <div class="stack" style="gap:16px">
+      <p class="lede">This inventory places you on separate economic, social and state-authority scales, adds short scales for climate, trade and populism, and profiles the moral foundations underneath. It uses the methods survey researchers rely on to reduce noise.</p>
+      <div class="row">
+        ${resumable?`<button class="btn" id="resume">Resume (${n} of ${S.order.length} answered)</button><button class="btn ghost" id="start">Start over</button>`
+          : hasResult?`<button class="btn" id="view">View your last result</button><button class="btn ghost" id="start">Retake</button>`
+          :`<button class="btn" id="start">Begin</button>`}
+      </div>
+    </div>
+    <div>
+      <div class="compass">${compassSVG(-38,-22,[-50,-26],[-35,-9])}</div>
+      <p class="example-tag">Example result, not yours</p>
+    </div>
+  </section>
+  <section class="spec fade" aria-label="Instrument design">
+    <div><b>3 + 3</b><span class="small muted">core ideology scales plus short scales</span></div>
+    <div><b>24</b><span class="small muted">matched pairs, each topic worded both ways</span></div>
+    <div><b>18</b><span class="small muted">moral-foundation statements, six foundations</span></div>
+    <div><b>7</b><span class="small muted">checks on the quality of your answers</span></div>
+  </section>
+  <section class="panel prose fade">
+    <h3 style="font-family:var(--f-display)">Before you start</h3>
+    <ul>
+      <li>Answer with your own view, not what you think is expected. There are no right answers.</li>
+      <li>You'll see many topics twice, worded from opposite sides and far apart. That's deliberate: it separates your view from a general habit of agreeing.</li>
+      <li>Use <em>Neither agree nor disagree</em> for a genuinely middle view and <em>No opinion</em> when you haven't formed one; <em>No opinion</em> answers are skipped in scoring.</li>
+      <li>No statement names a party or politician. Your answers stay in this browser.</li>
+    </ul>
+  </section>`;
+  const b=id=>document.getElementById(id);
+  b('start')&&(b('start').onclick=()=>{ newRun(); renderQ() });
+  b('resume')&&(b('resume').onclick=()=>renderQ());
+  b('view')&&(b('view').onclick=()=>renderResults());
+}
+
+let shownAt=0;
+function renderQ(){
+  const idx=S.idx, id=S.order[idx], it=byId(id), total=S.order.length, cur=S.answers[id];
+  const isSelf = it.type==='self', isCheck = it.type==='attn'||it.type==='infreq';
+  const ticks = S.order.map((x,i)=>`<i class="${i===idx?'now':(S.answers[x]!==undefined?'done':'')}"></i>`).join('');
+  const words = esc(it.text).split(' ').map((w,i)=>`<span class="w" style="animation-delay:${Math.min(i*28,700)}ms">${w}</span>`).join(' ');
+  const opts = isSelf? SELF_OPTS : LIKERT;
+  app.innerHTML = `
+  <div class="stack" style="gap:20px">
+    <div class="ticks" style="grid-template-columns:repeat(${total},1fr)" aria-hidden="true">${ticks}</div>
+    <div class="qhead">
+      <span class="eyebrow">Item ${idx+1} of ${total}</span>
+      <button class="link small" id="quit">Save and exit</button>
+    </div>
+    <p class="statement" aria-live="polite">${words}</p>
+    <div class="scale ${isSelf?'list':''}" role="group" aria-label="Your answer">
+      ${opts.map((t,i)=>`<button class="opt ${cur===i+1?'sel':''}" data-v="${i+1}" id="opt-${i+1}"><span class="k">${i+1}</span><span class="t">${t}</span></button>`).join('')}
+    </div>
+    <div class="alt">
+      ${idx>0?`<button class="link" id="back">← Previous</button>`:'<span></span>'}
+      ${(!isSelf&&!isCheck)?`<button class="nop ${cur===0?'sel':''}" id="nop" data-v="0">No opinion <span class="kbd">0</span></button>`:''}
+    </div>
+    <p class="kbd">Keys: 1–${opts.length} to answer${(!isSelf&&!isCheck)?', 0 for no opinion':''}, ← to go back</p>
+  </div>`;
+  shownAt = performance.now();
+  app.querySelectorAll('.opt,.nop').forEach(b=>b.onclick=()=>answer(+b.dataset.v));
+  const back=document.getElementById('back'); back&&(back.onclick=goBack);
+  document.getElementById('quit').onclick=()=>{ save(); renderIntro() };
+}
+function answer(v){
+  const id=S.order[S.idx], it=byId(id);
+  if(v===0 && (it.type==='self'||it.type==='attn'||it.type==='infreq')) return;
+  S.answers[id]=v;
+  if(S.times[id]===undefined){ S.times[id]=performance.now()-shownAt; S.words[id]=wordCount(it.text) }
+  if(S.idx<S.order.length-1){ S.idx++; save(); renderQ() }
+  else { S.done=true; save(); renderResults(true) }
+}
+function goBack(){ if(S.idx>0){ S.idx--; save(); renderQ() } }
+document.addEventListener('keydown',e=>{
+  if(!S || S.done || !document.querySelector('.statement')) return;
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  const it=byId(S.order[S.idx]); const max = it.type==='self'?7:5;
+  if(/^[1-7]$/.test(e.key) && +e.key<=max){ e.preventDefault(); answer(+e.key) }
+  else if(e.key==='0'){ e.preventDefault(); answer(0) }
+  else if(e.key==='ArrowLeft'){ e.preventDefault(); goBack() }
+});
+
+function axisBlock(dim,r,short){
+  const d=DIMS[dim];
+  if(!r.ok) return `<div class="axis"><div class="axis-top"><h3>${d.name}</h3><span class="mono small muted">too few answers</span></div></div>`;
+  const pct=v=>(v+100)/2;
+  return `<div class="axis">
+    <div class="axis-top"><h3>${d.name}</h3><span class="mono small">${sgn(r.score)} <span class="muted">± ${Math.round(r.half)}</span></span></div>
+    <div class="track"><div class="rail"></div><div class="mid"></div>
+      <div class="ci" data-l="${pct(r.lo)}" data-w="${pct(r.hi)-pct(r.lo)}" style="left:50%;width:0"></div>
+      <div class="pt" data-l="${pct(r.score)}" style="left:50%"></div></div>
+    <div class="poles"><span>${d.neg}</span><span>${d.pos}</span></div>
+    <p class="small muted">Reads as <b style="color:var(--ink);font-weight:600">${axisWord(dim,r.score)}</b> · ${r.n} of ${r.total} answered${short?'':` · same direction on ${Math.round(r.consistency*100)}% of the weight`}</p>
+  </div>`;
+}
+
+function renderResults(animate){
+  const A=S.answers;
+  const sc={}; [...CORE,...SHORT].forEach(d=>sc[d]=scoreDim(d,A));
+  const e=sc.econ, so=sc.social, au=sc.auth;
+  const mf=scoreMF(A), q=quality(A,S.times,S.words||{});
+  const v = (e.ok&&so.ok)? verdict(e.score,so.score) : {title:'Not enough answers to place you',body:'Too many statements were marked No opinion on the economic or social scale. Retake and answer at least 8 of 12 on each.'};
+  const mfRows = Object.keys(MF_NAMES).map(f=>{
+    const x=mf.f[f], ind=f==='care'||f==='equality';
+    if(!x) return `<span class="small">${MF_NAMES[f]}</span><div class="bar"></div><span class="mono small" style="text-align:right">—</span>`;
+    const rel=Math.max(-1.5,Math.min(1.5,x.rel)), w=Math.abs(rel)/1.5*50, l=rel<0?50-w:50;
+    return `<span class="small">${MF_NAMES[f]}</span><div class="bar ${ind?'ind':''}"><i data-l="${l}" data-w="${w}" style="left:50%;width:0"></i></div><span class="mono small" style="text-align:right">${x.rel>=0?'+':''}${x.rel.toFixed(2)} <span class="muted">(${x.raw.toFixed(1)})</span></span>`;
+  }).join('');
+  const ranked = Object.keys(MF_NAMES).filter(f=>mf.f[f]).sort((a,b)=>mf.f[b].rel-mf.f[a].rel);
+  const mfRead = mf.diff==null? '' : `Relative to your own average, you weight <b>${MF_NAMES[ranked[0]].toLowerCase()}</b> and <b>${MF_NAMES[ranked[1]].toLowerCase()}</b> most and <b>${MF_NAMES[ranked[ranked.length-1]].toLowerCase()}</b> least. `
+    + (Math.abs(mf.diff)<0.4 ? 'Your individual-focused foundations (care, equality) and group-focused ones (loyalty, authority, purity) are roughly balanced.'
+      : mf.diff>0 ? 'Care and equality outweigh loyalty, authority and purity for you. In U.S. and Western European samples this pattern is more common on the left; the link is weaker or different in many other cultures.'
+      : 'Loyalty, authority and purity outweigh care and equality for you. In U.S. and Western European samples this pattern is more common on the right; the link is weaker or different in many other cultures.');
+  const dRows = ['attn','infreq','contra','acq','spread','speed','miss'].map(k=>{ const r=q.r[k]; return `<dt>${r.label}</dt><dd><span class="chip ${r.state}"><span class="dot"></span>${esc(r.value)}</span></dd><p class="note">${r.note}</p>` }).join('');
+  const contraPairs=new Set(); ITEMS.forEach(i=>{ if(i.pair&&i.dir===1){ const a=A[i.pair+'a'],b=A[i.pair+'b']; if(valid(a)&&valid(b)&&((a>=4&&b>=4)||(a<=2&&b<=2))) contraPairs.add(i.pair) } });
+  const poleName = it => it.dim==='mf'? MF_NAMES[it.f] : (it.dir>0? DIMS[it.dim].posW : DIMS[it.dim].negW);
+  const itemRows = ITEMS.concat([ATTN,INFREQ]).map(it=>{
+    const a=A[it.id]; const ans = a===undefined?'—':a===0?'No opinion':LIKERT[a-1];
+    const pole = it.type? 'Check' : poleName(it);
+    return `<tr class="${contraPairs.has(it.pair)?'contra':''}"><td class="num">${it.id}</td><td>${esc(it.text)}</td><td>${ans}</td><td class="small muted">${pole}</td></tr>`;
+  }).join('');
+  const ce=e.ok?[e.lo,e.hi]:null, cs=so.ok?[so.lo,so.hi]:null;
+  const sr = selfRead(A,e,so);
+
+  app.innerHTML = `
+  <header class="verdict fade">
+    <span class="eyebrow">Your result</span>
+    <h1>${esc(v.title)}</h1>
+    <p class="lede">${v.body}</p>
+    <div class="chips">
+      <span class="chip ${q.grade.s}"><span class="dot"></span>Data quality: ${q.grade.t}</span>
+      ${CORE.filter(d=>sc[d].ok).map(d=>`<span class="chip acc"><span class="dot"></span>${DIMS[d].name} ${sgn(sc[d].score)}</span>`).join('')}
+    </div>
+  </header>
+
+  <section class="res-grid fade">
+    <div class="panel compass">${e.ok&&so.ok? compassSVG(e.score,so.score,ce,cs,{id:'pt',animate:!!animate}) : '<p class="muted">Plot unavailable.</p>'}
+      <p class="small muted" style="margin-top:10px">Scores run from −100 to +100. 0 is the middle of the scale, not the average person. The dashed box shows how much your answers varied from topic to topic within each scale (a wider box means your views differ by topic, or some answers were noisy). It does not predict a retest.</p>
+    </div>
+    <div class="panel axes">${CORE.map(d=>axisBlock(d,sc[d])).join('')}</div>
+  </section>
+
+  <section class="panel stack fade">
+    <div class="axis-top"><h2>Short scales</h2><span class="small muted">4 statements each, indicative only</span></div>
+    <p class="small muted">These cut across left and right rather than lining up with them, so they aren't part of the plot above.</p>
+    <div class="res-grid" style="gap:20px 28px">${SHORT.map(d=>axisBlock(d,sc[d],true)).join('')}</div>
+  </section>
+
+  <section class="res-grid fade">
+    <div class="panel stack">
+      <h2>Moral foundations</h2>
+      <p class="small muted">Each foundation compared with your own average across all 18 statements, so a general habit of agreeing cancels out. Raw 1–5 average in brackets.</p>
+      <div class="mf">${mfRows}</div>
+      <div class="mf-scale"><span>−1.5</span><span>your average</span><span>+1.5</span></div>
+      <p class="small">${mfRead}</p>
+    </div>
+    <div class="panel stack">
+      <h2>Label vs. positions</h2>
+      <p class="small">${sr||'No self-placement recorded.'}</p>
+      <h2 style="margin-top:8px">How much to trust this</h2>
+      <dl class="diag">${dRows}</dl>
+    </div>
+  </section>
+
+  <section class="stack fade">
+    <div class="row">
+      <button class="btn" id="copy">Copy summary</button>
+      <button class="btn ghost" id="retake">Retake</button>
+    </div>
+    <details><summary>Your answers, statement by statement</summary>
+      <div class="tablewrap"><table><thead><tr><th>Item</th><th>Statement</th><th>Your answer</th><th>Agree points to</th></tr></thead><tbody>${itemRows}</tbody></table></div>
+      <p class="small muted" style="margin-top:8px">Items ending in a and b are the two sides of one pair. Shaded rows are pairs where you agreed with both sides or disagreed with both.</p>
+    </details>
+    <details><summary>How labels and cutoffs work</summary>
+      <div class="prose" style="margin-top:12px">
+        <p>A scale score is your average answer toward its + pole, times 50. So +50 means you <i>somewhat agreed</i> with that side on average, and +100 means <i>strongly</i> on every statement. The word labels use provisional cutoffs: under 15 is centrist (within about a third of a step of neutral), 15–40 leaning, 40–70 moderately, 70 and above strongly. These are set from what the answers mean, not from population data, and will change once norms are added.</p>
+      </div>
+    </details>
+    <details><summary>Method and sources</summary>
+      <div class="prose" style="margin-top:12px">
+        <p><b>Structure.</b> Feldman and Johnston (2014, <i>Political Psychology</i>) showed that economic and social ideology are the minimum two dimensions needed to account for policy preferences, and that only about 45% of a U.S. national sample fit cleanly on one left–right line. Everett's SECS (2013, <i>PLOS ONE</i>) validated separate social and economic subscales on the same logic. The state-authority scale follows the authoritarian–libertarian distinction in Duckitt and Sibley's dual-process model. The populism scale draws on the populist-attitudes construct of Akkerman, Mudde and Zaslove (2014, <i>Comparative Political Studies</i>), with every item balanced by an opposite.</p>
+        <p><b>Item design.</b> Every statement asks for a value or preference, not a judgment about facts, and makes a single claim. Ideology statements come in matched pairs on the same topic with equal strength in both directions. Pairs are shown at least eight items apart.</p>
+        <p><b>Moral foundations.</b> The six foundations come from the MFQ-2 (Atari et al., 2023, <i>Journal of Personality and Social Psychology</i>), which split fairness into equality and proportionality and found that foundations vary substantially by culture. Items here are original wording for those constructs, three per foundation, scored relative to your own average.</p>
+        <p><b>Noise controls.</b> Balanced pairs cancel most yea-saying. <i>No opinion</i> is scored as missing, not neutral. An instructed-response check, an implausible-statement check, contradictory-pair counts, response variety and a reading-speed check flag low-quality runs. Self-placement is asked last so the label can't anchor your answers.</p>
+        <p><b>Limits.</b> The items have not yet been field-tested, so scores show your position relative to the scale midpoint, not a percentile among the public, and the band reflects variation across topics rather than test–retest reliability. Issue salience differs by country: religion in law, immigration or abortion can carry different weight in India than in the U.S.</p>
+        <ul class="small">
+          <li><a href="https://scholars.duke.edu/publication/745676" target="_blank" rel="noopener">Feldman &amp; Johnston (2014), Understanding the determinants of political ideology</a></li>
+          <li><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3859575/" target="_blank" rel="noopener">Everett (2013), The 12 Item Social and Economic Conservatism Scale</a></li>
+          <li><a href="https://link.springer.com/article/10.1007/s12144-025-07630-4" target="_blank" rel="noopener">MFQ-2 (Atari et al., 2023) and later validation work</a></li>
+          <li><a href="https://research.vu.nl/en/publications/how-populist-are-the-people-measuring-populist-attitudes-in-voter/" target="_blank" rel="noopener">Akkerman, Mudde &amp; Zaslove (2014), How populist are the people?</a></li>
+          <li><a href="https://methods.sagepub.com/ency/edvol/embed/encyclopedia-of-survey-research-methods/chpt/acquiescence-response-bias" target="_blank" rel="noopener">Acquiescence response bias, Encyclopedia of Survey Research Methods</a></li>
+        </ul>
+      </div>
+    </details>
+  </section>`;
+
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    app.querySelectorAll('.track .ci').forEach(el=>{ el.style.left=el.dataset.l+'%'; el.style.width=el.dataset.w+'%' });
+    app.querySelectorAll('.track .pt').forEach(el=>{ el.style.left=el.dataset.l+'%' });
+    app.querySelectorAll('.mf .bar i').forEach(el=>{ el.style.left=el.dataset.l+'%'; el.style.width=el.dataset.w+'%' });
+    const pt=document.getElementById('pt'); if(pt){ pt.setAttribute('cx',pt.dataset.x); pt.setAttribute('cy',pt.dataset.y) }
+  }));
+
+  const summary = [
+    'Ideology Inventory result: '+v.title,
+    ...[...CORE,...SHORT].filter(d=>sc[d].ok).map(d=>`${DIMS[d].name}: ${sgn(sc[d].score)} (±${Math.round(sc[d].half)}), ${axisWord(d,sc[d].score)}`),
+    'Moral foundations vs. own average: '+Object.keys(MF_NAMES).filter(f=>mf.f[f]).map(f=>MF_NAMES[f]+' '+(mf.f[f].rel>=0?'+':'')+mf.f[f].rel.toFixed(2)).join(', '),
+    'Data quality: '+q.grade.t
+  ].join('\n');
+  document.getElementById('copy').onclick=()=>{
+    try{ navigator.clipboard.writeText(summary).then(()=>toast('Summary copied'),()=>fallbackCopy(summary)) }catch(err){ fallbackCopy(summary) }
+  };
+  document.getElementById('retake').onclick=()=>{ newRun(); renderQ() };
+  window.scrollTo(0,0);
+}
+function fallbackCopy(t){
+  const ta=document.createElement('textarea'); ta.value=t; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast('Summary copied') }catch(e){ toast('Select and copy the summary manually') }
+  ta.remove();
+}
+let tt; function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(()=>t.hidden=true,1800) }
+
+renderIntro();
+</script>

@@ -1,0 +1,44 @@
+/* Design tokens: light values on :root, dark under prefers-color-scheme and [data-theme="dark"]. */
+:root {
+  --bg: #eceef2;
+  --surface: #f8f9fb;
+  --ink: #14171c;
+  --muted: #5a6170;
+  --line: #d2d6de;
+  --accent: #2f43c8;
+  --accent-soft: rgba(47, 67, 200, 0.12);
+  --good: #1d7a4b;
+  --warn: #9a5c00;
+  --bad: #b3261e;
+  --f-display: 'Familjen Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --f-read: 'Newsreader Variable', 'Newsreader', Georgia, 'Times New Roman', serif;
+  --f-data: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #0f1115;
+    --surface: #171a21;
+    --ink: #e7e9ee;
+    --muted: #9aa1ae;
+    --line: #2b303a;
+    --accent: #8d9bff;
+    --accent-soft: rgba(141, 155, 255, 0.16);
+    --good: #5cc48c;
+    --warn: #e3a43c;
+    --bad: #f2766c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --bg: #0f1115;
+  --surface: #171a21;
+  --ink: #e7e9ee;
+  --muted: #9aa1ae;
+  --line: #2b303a;
+  --accent: #8d9bff;
+  --accent-soft: rgba(141, 155, 255, 0.16);
+  --good: #5cc48c;
+  --warn: #e3a43c;
+  --bad: #f2766c;
+  color-scheme: dark;
+}

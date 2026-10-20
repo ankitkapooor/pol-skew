@@ -1,0 +1,11 @@
+dist
+node_modules
+legacy
+package-lock.json
+.wrangler
+playwright-report
+test-results
+coverage
+data/norms/*.json
+scripts/analysis/output
+.venv
