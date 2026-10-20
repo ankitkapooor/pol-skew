@@ -79,8 +79,8 @@ appear.
 
 Vite + **vanilla TypeScript**. The prototype was a single file of template-string rendering, and a
 framework would add weight without simplifying a one-question-at-a-time flow. Scoring is pure,
-side-effect-free functions with unit tests. Styling uses CSS tokens (light and dark), self-hosted
-Familjen Grotesk, Newsreader and IBM Plex Mono, and motion that respects `prefers-reduced-motion`.
+side-effect-free functions with unit tests. Styling uses CSS tokens (light and dark), the system
+font with self-hosted Inter as the fallback, and motion that respects `prefers-reduced-motion`.
 It is served by a **Cloudflare Worker** with static assets, with **D1** for opt-in submissions and
 **Turnstile** for bot checks.
 

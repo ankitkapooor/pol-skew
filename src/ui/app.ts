@@ -73,6 +73,7 @@ export function showResults(animate: boolean): void {
   if (!S) return;
   renderResults(S, animate, {
     retake: startWithConsent,
+    home: showIntro,
     openBenchmark: () => {
       if (!S) return;
       startBenchmark(S, {

@@ -31,14 +31,16 @@ const hex = (h: string): [number, number, number] => [
 ];
 
 const PDF_COMPASS: CompassColors = {
-  surface: LIGHT.surface,
+  surface: LIGHT.bg,
   line: LIGHT.line,
   muted: LIGHT.muted,
   ink: LIGHT.ink,
   accent: LIGHT.accent,
   accentSoft: LIGHT.accentSoft,
-  fData: 'courier',
+  fData: 'helvetica',
   fDisplay: 'helvetica',
+  card: '#FFFFFF',
+  labelWeight: 'bold',
 };
 
 export interface PdfMeta {

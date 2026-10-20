@@ -6,17 +6,18 @@ export const TITLE = 'Ideology Inventory';
 
 /** Light palette used by every export, whatever the on-screen theme (mirrors src/styles/tokens.css). */
 export const LIGHT = {
-  bg: '#ECEEF2',
-  surface: '#F8F9FB',
-  ink: '#14171C',
-  muted: '#5A6170',
-  line: '#D2D6DE',
-  accent: '#2F43C8',
-  /** accent at 12% over surface, as a solid colour for PDF. */
-  accentSoft: '#E0E3F5',
-  good: '#1D7A4B',
-  warn: '#9A5C00',
-  bad: '#B3261E',
+  bg: '#F5F5F7',
+  surface: '#FFFFFF',
+  ink: '#1D1D1F',
+  muted: '#6E6E73',
+  line: '#D2D2D7',
+  /** Teal used for the respondent's marks (--mark). */
+  accent: '#0891A8',
+  /** --band (teal at 20%) over white, as a solid colour for PDF. */
+  accentSoft: '#D6EFF4',
+  good: '#248A3D',
+  warn: '#B25000',
+  bad: '#D70015',
 } as const;
 
 export const signed = (v: number): string => (v > 0 ? '+' : '') + Math.round(v);

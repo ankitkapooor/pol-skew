@@ -78,7 +78,8 @@ export function renderBenchmarkQ(S: RunState, h: BenchmarkHandlers): void {
           .join('')
       : '';
   app().innerHTML = `
-  <div class="stack bench" style="gap:20px">
+  <div class="screen"><div class="container narrow bench-screen">
+  <div class="stack bench" style="gap:24px">
     <div class="ticks" style="grid-template-columns:repeat(${total},1fr)" aria-hidden="true">${ticks}</div>
     <div class="qhead">
       <span class="eyebrow">U.S. benchmark · ${B.idx + 1} of ${total} · ${esc(src.short)} wording</span>
@@ -92,7 +93,8 @@ export function renderBenchmarkQ(S: RunState, h: BenchmarkHandlers): void {
       <span class="row" style="gap:8px">${nonSub}<button class="link small" id="bskip">Skip this question</button></span>
     </div>
     <p class="kbd">Worded exactly as in ${esc(src.short)}, so your answer can be compared with theirs.</p>
-  </div>`;
+  </div>
+  </div></div>`;
 
   const choose = (v: number) => {
     if (item.format === 'branch' && item.branch && stage === 'first') {

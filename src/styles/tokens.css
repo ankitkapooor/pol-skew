@@ -1,44 +1,117 @@
-/* Design tokens: light values on :root, dark under prefers-color-scheme and [data-theme="dark"]. */
+/* Design tokens: light values on :root, dark under prefers-color-scheme and [data-theme="dark"].
+   Neutrals and a single interactive blue; teal, orange, green and yellow each mark one part of the
+   result (scales, moral foundations, quality, review). Red and blue never mark a side or position. */
 :root {
-  --bg: #eceef2;
-  --surface: #f8f9fb;
-  --ink: #14171c;
-  --muted: #5a6170;
-  --line: #d2d6de;
-  --accent: #2f43c8;
-  --accent-soft: rgba(47, 67, 200, 0.12);
-  --good: #1d7a4b;
-  --warn: #9a5c00;
-  --bad: #b3261e;
-  --f-display: 'Familjen Grotesk', 'Helvetica Neue', Arial, sans-serif;
-  --f-read: 'Newsreader Variable', 'Newsreader', Georgia, 'Times New Roman', serif;
-  --f-data: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+  --bg: #ffffff;
+  --alt: #f5f5f7;
+  --card: #ffffff;
+  --ink: #1d1d1f;
+  --ink2: #424245;
+  --muted: #6e6e73;
+  --sep: #d2d2d7;
+  --hair: #e8e8ed;
+  --fill: rgba(0, 0, 0, 0.05);
+  --group: #f5f5f7;
+  --nav: rgba(255, 255, 255, 0.8);
+  --accent: #0071e3;
+  --accent-hover: #0077ed;
+  --accent-soft: rgba(0, 113, 227, 0.08);
+  --link: #0066cc;
+  --mark: #0891a8;
+  --band: rgba(48, 176, 199, 0.2);
+  --teal-fill: #30b0c7;
+  --teal-text: #0b7285;
+  --tint: #eaf5f7;
+  --orange: #ff9500;
+  --orange-soft: rgba(255, 149, 0, 0.38);
+  --orange-text: #c93400;
+  --green-fill: #34c759;
+  --grey-fill: #8e8e93;
+  --yellow: #ffcc00;
+  --good: #248a3d;
+  --warn: #b25000;
+  --warn-soft: rgba(255, 204, 0, 0.16);
+  --bad: #d70015;
+  --logo-red: #ff3b30;
+  --logo-blue: #0071e3;
+  --shadow: 0 2px 6px rgba(0, 0, 0, 0.04), 0 24px 60px -24px rgba(0, 0, 0, 0.18);
+  --ease: cubic-bezier(0.28, 0.11, 0.32, 1);
+  --f-text:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter Variable', 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
+  --f-display:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter Variable', 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --f-data: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  /* Aliases kept for modules that predate the redesign. */
+  --surface: var(--card);
+  --line: var(--sep);
+  --f-read: var(--f-text);
+  color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --bg: #0f1115;
-    --surface: #171a21;
-    --ink: #e7e9ee;
-    --muted: #9aa1ae;
-    --line: #2b303a;
-    --accent: #8d9bff;
-    --accent-soft: rgba(141, 155, 255, 0.16);
-    --good: #5cc48c;
-    --warn: #e3a43c;
-    --bad: #f2766c;
+    --bg: #000000;
+    --alt: #000000;
+    --card: #1c1c1e;
+    --ink: #f5f5f7;
+    --ink2: #d2d2d7;
+    --muted: #a1a1a6;
+    --sep: #424245;
+    --hair: #2c2c2e;
+    --fill: rgba(255, 255, 255, 0.09);
+    --group: #1c1c1e;
+    --nav: rgba(22, 22, 23, 0.8);
+    --accent-soft: rgba(41, 151, 255, 0.14);
+    --link: #2997ff;
+    --mark: #40c8e0;
+    --band: rgba(64, 200, 224, 0.26);
+    --teal-fill: #40c8e0;
+    --teal-text: #5ad8ee;
+    --tint: #0d2226;
+    --orange: #ff9f0a;
+    --orange-soft: rgba(255, 159, 10, 0.42);
+    --orange-text: #ffb340;
+    --green-fill: #30d158;
+    --grey-fill: #636366;
+    --yellow: #ffd60a;
+    --good: #30d158;
+    --warn: #ffb340;
+    --warn-soft: rgba(255, 214, 10, 0.14);
+    --bad: #ff6961;
+    --shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.6);
     color-scheme: dark;
   }
 }
 :root[data-theme='dark'] {
-  --bg: #0f1115;
-  --surface: #171a21;
-  --ink: #e7e9ee;
-  --muted: #9aa1ae;
-  --line: #2b303a;
-  --accent: #8d9bff;
-  --accent-soft: rgba(141, 155, 255, 0.16);
-  --good: #5cc48c;
-  --warn: #e3a43c;
-  --bad: #f2766c;
+  --bg: #000000;
+  --alt: #000000;
+  --card: #1c1c1e;
+  --ink: #f5f5f7;
+  --ink2: #d2d2d7;
+  --muted: #a1a1a6;
+  --sep: #424245;
+  --hair: #2c2c2e;
+  --fill: rgba(255, 255, 255, 0.09);
+  --group: #1c1c1e;
+  --nav: rgba(22, 22, 23, 0.8);
+  --accent-soft: rgba(41, 151, 255, 0.14);
+  --link: #2997ff;
+  --mark: #40c8e0;
+  --band: rgba(64, 200, 224, 0.26);
+  --teal-fill: #40c8e0;
+  --teal-text: #5ad8ee;
+  --tint: #0d2226;
+  --orange: #ff9f0a;
+  --orange-soft: rgba(255, 159, 10, 0.42);
+  --orange-text: #ffb340;
+  --green-fill: #30d158;
+  --grey-fill: #636366;
+  --yellow: #ffd60a;
+  --good: #30d158;
+  --warn: #ffb340;
+  --warn-soft: rgba(255, 214, 10, 0.14);
+  --bad: #ff6961;
+  --shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.6);
   color-scheme: dark;
 }

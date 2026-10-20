@@ -23,8 +23,15 @@ All four work-queue tasks are implemented in this repository. What remains needs
    100 ms. Otherwise a near-instant answer would round to 0 and drop out of the server-side speed
    check.
 
-Fonts are self-hosted (`@fontsource`) instead of loaded from Google Fonts, so no request leaves the
-browser by default.
+Fonts are self-hosted (`@fontsource-variable/inter`) instead of loaded from Google Fonts, so no request
+leaves the browser by default. Apple devices use the system San Francisco face first; Inter is the
+fallback elsewhere.
+
+**UI redesign (October 2026).** The interface was rebuilt in a restrained, Apple-inspired style
+(see the Design section of `CLAUDE.md`). It is presentation only: item wording, keying, order,
+scoring, consent flow, storage and exports are unchanged, so `INSTRUMENT_VERSION` did not change.
+Shared chrome lives in `src/ui/chrome.ts`; tokens in `src/styles/tokens.css`. The PNG card and PDF
+use the matching light palette in `src/export/common.ts`.
 
 ---
 

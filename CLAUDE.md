@@ -22,7 +22,7 @@ All four tasks are implemented (see the status table in `docs/HANDOFF.md`). The 
 
 ## Design
 
-Keep the prototype's visual language: cool grey-blue neutrals, a single ultramarine accent, no red/blue partisan colouring; Familjen Grotesk (UI), Newsreader (statements and prose), IBM Plex Mono (data). Light and dark themes via CSS tokens. Motion: word-by-word statement reveal, animated plot points, respecting `prefers-reduced-motion`. The owner uses https://prompt-motion.com as a reference for motion and visual style.
+Restrained, Apple-inspired visual language (owner-approved redesign, October 2026): white and light-grey (`#f5f5f7`) surfaces, white cards, the system face (San Francisco on Apple devices) with self-hosted Inter as the fallback, regular and semibold weights only. Blue (`#0071e3`) is only for things you can press or that are selected. A little colour marks parts of the result: teal for the respondent's scales and marks, orange for moral foundations, green for quality and privacy, yellow for a check to review. Red and blue never mark a side, pole or position (they appear only as the two dots in the logo); no purple, gradients or glows. Light and dark themes via CSS tokens in `src/styles/tokens.css`. Motion: gentle fade-up on load, scroll-linked reveals, a quick word-by-word statement fade, counting scores and easing plot points, all off under `prefers-reduced-motion`. The approved mockup is the canvas https://claude.ai/artifact/FFFeE9r4tm1uuWSXzWMB1R. The owner uses https://prompt-motion.com as a reference for motion and visual style.
 
 ## Commands
 

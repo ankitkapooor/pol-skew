@@ -12,9 +12,9 @@ export const CARD_SIZES: Record<CardFormat, { w: number; h: number }> = {
 };
 
 const F = {
-  display: '"Familjen Grotesk", "Helvetica Neue", Arial, sans-serif',
-  read: '"Newsreader Variable", "Newsreader", Georgia, serif',
-  data: '"IBM Plex Mono", ui-monospace, Menlo, monospace',
+  display: '"Inter Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif',
+  read: '"Inter Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif',
+  data: 'ui-monospace, "SF Mono", Menlo, Consolas, monospace',
 };
 
 /** Make sure the web fonts are loaded before drawing, or canvas falls back to system fonts. */
@@ -74,39 +74,27 @@ function drawCompass(ctx: Ctx, R: Results, x: number, y: number, size: number): 
   const X = (v: number) => x + Pd + ((v + 100) / 200) * inner;
   const Y = (v: number) => y + Pd + ((100 - v) / 200) * inner;
   ctx.save();
-  ctx.fillStyle = LIGHT.surface;
+  ctx.fillStyle = LIGHT.bg;
+  roundRect(ctx, x + Pd, y + Pd, inner, inner, 14 * k);
+  ctx.fill();
   ctx.strokeStyle = LIGHT.line;
   ctx.lineWidth = 1.5;
-  ctx.fillRect(x + Pd, y + Pd, inner, inner);
-  ctx.strokeRect(x + Pd, y + Pd, inner, inner);
-  for (const v of [-50, 50]) {
-    ctx.beginPath();
-    ctx.moveTo(X(v), y + Pd);
-    ctx.lineTo(X(v), y + size - Pd);
-    ctx.moveTo(x + Pd, Y(v));
-    ctx.lineTo(x + size - Pd, Y(v));
-    ctx.stroke();
-  }
-  ctx.strokeStyle = LIGHT.muted;
-  ctx.globalAlpha = 0.7;
   ctx.beginPath();
-  ctx.moveTo(X(0), y + Pd);
-  ctx.lineTo(X(0), y + size - Pd);
-  ctx.moveTo(x + Pd, Y(0));
-  ctx.lineTo(x + size - Pd, Y(0));
+  ctx.moveTo(X(0), y + Pd + 8 * k);
+  ctx.lineTo(X(0), y + size - Pd - 8 * k);
+  ctx.moveTo(x + Pd + 8 * k, Y(0));
+  ctx.lineTo(x + size - Pd - 8 * k, Y(0));
   ctx.stroke();
-  ctx.globalAlpha = 1;
   ctx.fillStyle = LIGHT.muted;
-  ctx.font = `400 ${9 * k}px ${F.data}`;
-  spaced(ctx, 0.6 * k);
+  ctx.font = `600 ${9 * k}px ${F.display}`;
+  spaced(ctx, 0.4 * k);
   ctx.textAlign = 'left';
-  ctx.fillText('COMMUNITARIAN', x + Pd + 8 * k, y + Pd + 16 * k);
-  ctx.fillText('LEFT-PROGRESSIVE', x + Pd + 8 * k, y + size - Pd - 10 * k);
+  ctx.fillText('COMMUNITARIAN', x + Pd + 14 * k, y + Pd + 22 * k);
+  ctx.fillText('LEFT-PROGRESSIVE', x + Pd + 14 * k, y + size - Pd - 14 * k);
   ctx.textAlign = 'right';
-  ctx.fillText('CONSERVATIVE', x + size - Pd - 8 * k, y + Pd + 16 * k);
-  ctx.fillText('LIBERTARIAN-LEANING', x + size - Pd - 8 * k, y + size - Pd - 10 * k);
+  ctx.fillText('CONSERVATIVE', x + size - Pd - 14 * k, y + Pd + 22 * k);
+  ctx.fillText('LIBERTARIAN-LEANING', x + size - Pd - 14 * k, y + size - Pd - 14 * k);
   spaced(ctx, 0);
-  ctx.fillStyle = LIGHT.ink;
   ctx.font = `400 ${11 * k}px ${F.display}`;
   ctx.textAlign = 'center';
   ctx.fillText('Socially traditional', x + size / 2, y + Pd - 14 * k);
@@ -121,16 +109,11 @@ function drawCompass(ctx: Ctx, R: Results, x: number, y: number, size: number): 
   vlab('Economic left', x + Pd - 12 * k, -Math.PI / 2);
   vlab('Economic right', x + size - Pd + 16 * k, Math.PI / 2);
   if (e.ok && so.ok) {
-    ctx.fillStyle = 'rgba(47,67,200,.12)';
-    ctx.strokeStyle = LIGHT.accent;
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([3 * k, 3 * k]);
-    roundRect(ctx, X(e.lo), Y(so.hi), X(e.hi) - X(e.lo), Y(so.lo) - Y(so.hi), 6 * k);
+    ctx.fillStyle = LIGHT.accentSoft;
+    roundRect(ctx, X(e.lo), Y(so.hi), X(e.hi) - X(e.lo), Y(so.lo) - Y(so.hi), 8 * k);
     ctx.fill();
-    ctx.stroke();
-    ctx.setLineDash([]);
     ctx.beginPath();
-    ctx.arc(X(e.score), Y(so.score), 7 * k, 0, Math.PI * 2);
+    ctx.arc(X(e.score), Y(so.score), 8 * k, 0, Math.PI * 2);
     ctx.fillStyle = LIGHT.accent;
     ctx.fill();
     ctx.lineWidth = 3 * k;
@@ -159,18 +142,16 @@ function drawAxis(
   ctx.font = `500 ${30 * s}px ${F.data}`;
   ctx.fillText(r.ok ? `${signed(r.score)} ± ${Math.round(r.half)}` : '—', x + w, y + 30 * s);
   const ty = y + 58 * s;
+  ctx.fillStyle = LIGHT.bg;
+  roundRect(ctx, x, ty - 3 * s, w, 9 * s, 4.5 * s);
+  ctx.fill();
   ctx.fillStyle = LIGHT.line;
-  ctx.fillRect(x, ty, w, 3 * s);
-  ctx.fillStyle = LIGHT.muted;
   ctx.fillRect(x + w / 2 - 1, ty - 12 * s, 2, 27 * s);
   if (r.ok) {
     const px = (v: number) => x + ((v + 100) / 200) * w;
-    ctx.fillStyle = 'rgba(47,67,200,.12)';
-    ctx.strokeStyle = LIGHT.accent;
-    ctx.lineWidth = 1.5;
+    ctx.fillStyle = LIGHT.accentSoft;
     roundRect(ctx, px(r.lo), ty - 8 * s, px(r.hi) - px(r.lo), 19 * s, 9 * s);
     ctx.fill();
-    ctx.stroke();
     ctx.beginPath();
     ctx.arc(px(r.score), ty + 1.5 * s, 12 * s, 0, Math.PI * 2);
     ctx.fillStyle = LIGHT.accent;

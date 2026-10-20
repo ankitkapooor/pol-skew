@@ -8,12 +8,18 @@ export interface QuestionHandlers {
   quit: () => void;
 }
 
-/** Statement split into words that rise in one after another (disabled under prefers-reduced-motion in CSS). */
+/** Statement split into words that fade in one after another (disabled under prefers-reduced-motion in CSS). */
 export const revealWords = (text: string): string =>
   esc(text)
     .split(' ')
-    .map((w, i) => `<span class="w" style="animation-delay:${Math.min(i * 28, 700)}ms">${w}</span>`)
+    .map((w, i) => `<span class="w" style="animation-delay:${Math.min(i * 24, 500)}ms">${w}</span>`)
     .join(' ');
+
+/** Rough time left at the full run's pace (about 12 minutes for 69 screens). */
+const minutesLeft = (remaining: number): string => {
+  const m = Math.ceil((remaining * 10.5) / 60);
+  return m <= 1 ? 'About a minute left' : `About ${m} min left`;
+};
 
 export function renderQ(S: RunState, h: QuestionHandlers): void {
   const idx = S.idx;
@@ -28,21 +34,29 @@ export function renderQ(S: RunState, h: QuestionHandlers): void {
     .join('');
   const opts: readonly string[] = isSelf ? SELF_OPTS : LIKERT;
   app().innerHTML = `
-  <div class="stack" style="gap:20px">
-    <div class="ticks" style="grid-template-columns:repeat(${total},1fr)" aria-hidden="true">${ticks}</div>
-    <div class="qhead">
-      <span class="eyebrow">Item ${idx + 1} of ${total}</span>
-      <button class="link small" id="quit">Save and exit</button>
+  <div class="screen quiz-screen">
+    <header class="qbar">
+      <div class="container qbar-in">
+        <button class="link" id="quit">Save and exit</button>
+        <p class="qcount">Item ${idx + 1} of ${total}</p>
+        <p class="qtime">${minutesLeft(total - idx)}</p>
+      </div>
+      <div class="container"><div class="ticks" style="grid-template-columns:repeat(${total},1fr)" aria-hidden="true">${ticks}</div></div>
+    </header>
+    <div class="container quiz">
+      <div class="qhead-c">
+        <p class="muted">${isSelf ? 'Where would you place yourself?' : 'How much do you agree?'}</p>
+        <p class="statement" aria-live="polite">${revealWords(it.text)}</p>
+      </div>
+      <div class="scale ${isSelf ? 'list' : ''}" role="group" aria-label="Your answer">
+        ${opts.map((t, i) => `<button class="opt ${cur === i + 1 ? 'sel' : ''}" data-v="${i + 1}" id="opt-${i + 1}" aria-pressed="${cur === i + 1}"><span class="k">${i + 1}</span><span class="t">${t}</span></button>`).join('')}
+      </div>
+      <div class="alt">
+        ${idx > 0 ? `<button class="link" id="back">‹ Previous</button>` : '<span></span>'}
+        ${nop ? `<button class="nop ${cur === 0 ? 'sel' : ''}" id="nop" data-v="0" aria-pressed="${cur === 0}">No opinion</button>` : ''}
+      </div>
+      <p class="kbd">Press 1–${opts.length} to answer${nop ? ', 0 for no opinion' : ''}, ← to go back.</p>
     </div>
-    <p class="statement" aria-live="polite">${revealWords(it.text)}</p>
-    <div class="scale ${isSelf ? 'list' : ''}" role="group" aria-label="Your answer">
-      ${opts.map((t, i) => `<button class="opt ${cur === i + 1 ? 'sel' : ''}" data-v="${i + 1}" id="opt-${i + 1}"><span class="k">${i + 1}</span><span class="t">${t}</span></button>`).join('')}
-    </div>
-    <div class="alt">
-      ${idx > 0 ? `<button class="link" id="back">← Previous</button>` : '<span></span>'}
-      ${nop ? `<button class="nop ${cur === 0 ? 'sel' : ''}" id="nop" data-v="0">No opinion <span class="kbd">0</span></button>` : ''}
-    </div>
-    <p class="kbd">Keys: 1–${opts.length} to answer${nop ? ', 0 for no opinion' : ''}, ← to go back</p>
   </div>`;
   app()
     .querySelectorAll<HTMLButtonElement>('.opt,.nop')
@@ -50,4 +64,5 @@ export function renderQ(S: RunState, h: QuestionHandlers): void {
   const back = $('back');
   if (back) back.onclick = h.back;
   $('quit')!.onclick = h.quit;
+  if (window.scrollY > 0) window.scrollTo(0, 0);
 }

@@ -7,7 +7,7 @@ import { $, downloadBlob, toast } from './dom';
 
 export const exportsPanel = (): string => `
   <section class="panel stack no-print" id="exports">
-    <div class="axis-top"><h2>Keep your results</h2><span class="small muted">generated in your browser</span></div>
+    <div class="panel-head row-between"><h2 class="title sec-title"><span class="tile blue" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg></span>Save your result</h2><span class="small muted">Made on this device. Nothing is uploaded.</span></div>
     <div class="row">
       <button class="btn ghost" id="ex-pdf">PDF report</button>
       <button class="btn ghost" id="ex-png">Share image</button>
