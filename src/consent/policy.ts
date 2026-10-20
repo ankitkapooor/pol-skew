@@ -1,8 +1,10 @@
 /* Data-sharing policy and optional demographic fields, shared by the consent UI and the API
    validator. Changing what is collected means updating this file, docs/PRIVACY.md and the API tests. */
 
+export const CONSENT_VERSION = '2026-10-20';
+
 export const POLICY = {
-  /** Shown to respondents. OWNER DECISION: confirm before enabling collection. */
+  /** Policy approved by the owner when enabling collection. */
   controller: 'Ankit Kapoor (project owner)',
   access: 'Only the project owner can read individual submissions. There is no public way to view them.',
   retention:

@@ -18,7 +18,8 @@ export function mountExtras(root: HTMLElement, S: RunState, R: Results, h: Extra
   void fetchConfig().then((cfg) => {
     const slot = $('share-slot');
     const shared = !!getShared()[runFingerprint(S.order)];
-    if (slot && (cfg?.collecting || (cfg && shared))) mountShare(slot, S, cfg);
+    if (slot && (cfg?.collecting || shared || S.sharing))
+      mountShare(slot, S, cfg ?? { collecting: false, turnstileSiteKey: null });
   });
   void loadNorms().then((norms) => {
     const slot = $('bench-slot');

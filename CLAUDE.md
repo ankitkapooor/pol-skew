@@ -10,7 +10,7 @@ A research-informed political-orientation quiz. It places a respondent on separa
 
 ## Work queue
 
-All four tasks are implemented (see the status table in `docs/HANDOFF.md`). Remaining work needs the owner: build real norms from the ANES/CES microdata, sign off the data policy and IRB question, and enable collection. Ask the owner before choosing paid services, creating accounts, or picking between the hosting options listed there.
+All four tasks are implemented (see the status table in `docs/HANDOFF.md`). The owner required collection be enabled on October 20, 2026, with explicit consent before each quiz. Consented completed runs submit automatically; declined runs stay private. Keep deployment changes committed and pushed. Remaining owner work: build real norms from the ANES/CES microdata and address any applicable research-review requirements. Ask the owner before choosing paid services, creating accounts, or picking between the hosting options listed there.
 
 ## Non-negotiables
 

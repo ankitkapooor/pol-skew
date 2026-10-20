@@ -11,5 +11,6 @@ export interface SubmissionPayload {
   demographics?: Demographics;
   retestToken?: string;
   ageConfirmed: true;
+  consentVersion: string;
   turnstileToken: string;
 }

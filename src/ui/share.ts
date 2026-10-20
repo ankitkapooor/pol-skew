@@ -1,7 +1,13 @@
-/* Opt-in, anonymous sharing for validation. Nothing is sent unless the respondent ticks the
-   consent box, confirms they are 18 or older, passes the bot check and presses Share. */
+/* Explicit opt-in before the quiz enables automatic sharing of completed responses after a
+   fresh bot check. Older completed runs retain the manual consent-and-share flow. */
 import { buildPayload } from '../consent/payload';
-import { DEMOGRAPHICS, DEMOGRAPHIC_KEYS, POLICY, type Demographics } from '../consent/policy';
+import {
+  CONSENT_VERSION,
+  DEMOGRAPHICS,
+  DEMOGRAPHIC_KEYS,
+  POLICY,
+  type Demographics,
+} from '../consent/policy';
 import {
   addShared,
   clearRetest,
@@ -12,7 +18,7 @@ import {
   runFingerprint,
   setRetest,
 } from '../consent/retest';
-import type { RunState } from '../state/storage';
+import { saveRun, type RunState } from '../state/storage';
 import { $, copyText, esc, toast } from './dom';
 
 interface ApiConfig {
@@ -25,6 +31,7 @@ declare global {
     turnstile?: {
       render: (el: HTMLElement, o: Record<string, unknown>) => string;
       reset: (id?: string) => void;
+      remove: (id: string) => void;
     };
   }
 }
@@ -49,6 +56,7 @@ function loadTurnstile(): Promise<void> {
     s.onload = () => resolve();
     s.onerror = () => {
       turnstileLoading = null;
+      s.remove();
       reject(new Error('turnstile'));
     };
     document.head.appendChild(s);
@@ -66,7 +74,7 @@ const notice = (): string => `
     <li>Your result above stays fully available whether or not you share.</li>
   </ul>`;
 
-function demographicsFields(): string {
+export function demographicsFields(): string {
   return DEMOGRAPHIC_KEYS.map((k) => {
     const f = DEMOGRAPHICS[k];
     return `<label class="field"><span>${esc(f.label)} <span class="muted small">(optional)</span></span>
@@ -87,6 +95,15 @@ export function mountShare(slot: HTMLElement, S: RunState, cfg: ApiConfig): void
       ${deleteForm()}
     </section>`;
     wireDelete(already.id);
+    return;
+  }
+  if (S.sharing?.choice === 'declined') {
+    slot.innerHTML =
+      '<section class="panel stack"><h2>Your responses stay private</h2><p>You chose not to share this quiz. No responses have been submitted.</p></section>';
+    return;
+  }
+  if (S.sharing?.choice === 'accepted' && S.sharing.policyVersion === CONSENT_VERSION) {
+    mountAutomaticShare(slot, S, cfg);
     return;
   }
   slot.innerHTML = `<section class="panel stack share" id="share">
@@ -177,6 +194,142 @@ export function mountShare(slot: HTMLElement, S: RunState, cfg: ApiConfig): void
       update();
     }
   };
+}
+
+interface Receipt {
+  id: string;
+  deletionCode: string;
+}
+// Prevent repeated result renders from submitting the same run again, including when storage is blocked.
+const submissions = new Map<string, Promise<Receipt>>();
+
+function mountAutomaticShare(slot: HTMLElement, S: RunState, cfg: ApiConfig): void {
+  if (!S.done) return;
+  const run = runFingerprint(S.order);
+  slot.innerHTML = `<section class="panel stack share" id="share">
+    <h2>Anonymous response sharing</h2>
+    <p class="small">You agreed before the quiz to share your completed responses. Your results are available while sharing finishes.</p>
+    <div id="ts"></div><p id="share-status" class="small" role="status">Preparing to share…</p>
+    <div class="row"><button class="btn ghost" id="retry-share" hidden>Retry sharing</button><button class="btn ghost" id="cancel-share">Keep responses private</button></div>
+    ${deleteForm()}
+  </section>`;
+  wireDelete();
+  const status = $('share-status')!;
+  const retry = $<HTMLButtonElement>('retry-share')!;
+  const cancel = $<HTMLButtonElement>('cancel-share')!;
+  const target = $('ts')!;
+  let widget: string | undefined;
+  let sending = false;
+  const fail = (message: string) => {
+    if (!slot.isConnected) return;
+    sending = false;
+    status.textContent = message;
+    retry.hidden = false;
+    cancel.disabled = false;
+  };
+  const submit = async (token: string) => {
+    if (!slot.isConnected || S.sharing?.choice !== 'accepted' || sending) return;
+    sending = true;
+    cancel.disabled = true;
+    retry.hidden = true;
+    status.textContent = 'Sharing your completed responses…';
+    let pending = submissions.get(run);
+    if (!pending) {
+      pending = (async () => {
+        const retest = getRetest();
+        const isRetest = !!retest && retest.firstRun !== run;
+        const offerRetest = !!S.sharing?.offerRetest && !isRetest;
+        const retestToken = isRetest ? retest.token : offerRetest ? newToken() : undefined;
+        const payload = buildPayload(S, {
+          demographics: S.sharing?.demographics,
+          retestToken,
+          turnstileToken: token,
+          includeBenchmark: false,
+        });
+        const response = await fetch('/api/submissions', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = (await response.json()) as Partial<Receipt> & { error?: string };
+        if (!response.ok || !data.id || !data.deletionCode)
+          throw new Error(data.error ?? 'Sharing failed. Please retry.');
+        addShared(run, data.id);
+        if (offerRetest && retestToken)
+          setRetest({
+            token: retestToken,
+            firstOn: S.completedOn ?? new Date().toISOString().slice(0, 10),
+            firstRun: run,
+          });
+        if (isRetest) clearRetest();
+        return { id: data.id, deletionCode: data.deletionCode };
+      })();
+      submissions.set(run, pending);
+    }
+    try {
+      const receipt = await pending;
+      if (slot.isConnected) {
+        if (widget !== undefined) window.turnstile?.remove(widget);
+        showReceipt(receipt.id, receipt.deletionCode, !!S.sharing?.offerRetest);
+      }
+    } catch (err) {
+      submissions.delete(run);
+      fail(err instanceof Error ? err.message : 'Could not reach the server. Please retry.');
+    }
+  };
+  const prepare = async () => {
+    retry.hidden = true;
+    status.textContent = 'Completing the bot check before sharing…';
+    if (!cfg.collecting || !cfg.turnstileSiteKey) {
+      fail(
+        'Sharing is temporarily unavailable. Your responses have not been submitted. Retry when connected.',
+      );
+      return;
+    }
+    try {
+      await loadTurnstile();
+      if (!slot.isConnected || S.sharing?.choice !== 'accepted') return;
+      if (widget !== undefined) window.turnstile!.remove(widget);
+      widget = window.turnstile!.render(target, {
+        sitekey: cfg.turnstileSiteKey,
+        callback: (token: string) => {
+          void submit(token);
+        },
+        'error-callback': () => {
+          fail('The bot check could not finish. Please retry.');
+          return true;
+        },
+        'expired-callback': () => fail('The bot check expired. Please retry sharing.'),
+      });
+    } catch {
+      fail('The bot check could not load. Please retry sharing.');
+    }
+  };
+  retry.onclick = () => {
+    void fetchConfig().then((fresh) => {
+      if (fresh) cfg = fresh;
+      void prepare();
+    });
+  };
+  cancel.onclick = () => {
+    if (sending) return;
+    S.sharing = { choice: 'declined', policyVersion: CONSENT_VERSION };
+    saveRun(S);
+    if (widget !== undefined) window.turnstile?.remove(widget);
+    mountShare(slot, S, cfg);
+  };
+  const pending = submissions.get(run);
+  if (pending) {
+    sending = true;
+    cancel.disabled = true;
+    void pending
+      .then((receipt) => {
+        if (slot.isConnected) showReceipt(receipt.id, receipt.deletionCode, !!S.sharing?.offerRetest);
+      })
+      .catch(() => fail('Could not share. Please retry.'));
+  } else {
+    void prepare();
+  }
 }
 
 function showReceipt(id: string, code: string, retest: boolean): void {

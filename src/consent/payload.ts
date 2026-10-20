@@ -1,7 +1,7 @@
 import { SPEC } from '../benchmark/spec';
 import { INSTRUMENT_VERSION } from '../instrument/version';
 import type { RunState } from '../state/storage';
-import { roundTime, type Demographics } from './policy';
+import { CONSENT_VERSION, roundTime, type Demographics } from './policy';
 import type { SubmissionPayload } from './types';
 
 export type { SubmissionPayload };
@@ -26,6 +26,7 @@ export function buildPayload(
     answers: { ...S.answers },
     times,
     ageConfirmed: true,
+    consentVersion: CONSENT_VERSION,
     turnstileToken: opts.turnstileToken,
   };
   if (opts.includeBenchmark && S.benchmark?.done)

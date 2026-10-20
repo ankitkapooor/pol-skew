@@ -14,6 +14,13 @@ export interface RunState {
   completedOn?: string;
   /** Optional U.S. benchmark module, run after the results. */
   benchmark?: BenchmarkState;
+  /** Explicit choice made before the first question; never inferred for older runs. */
+  sharing?: {
+    choice: 'accepted' | 'declined';
+    policyVersion: string;
+    demographics?: import('../consent/policy').Demographics;
+    offerRetest?: boolean;
+  };
 }
 
 export interface BenchmarkState {

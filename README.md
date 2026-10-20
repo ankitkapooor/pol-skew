@@ -60,7 +60,8 @@ Plus an attention check, an implausible-statement check and a 7-point self-place
   and the [CES 2024](https://doi.org/10.7910/DVN/X11EP6), asked in their original format and compared
   with weighted national distributions. The main scales are never turned into percentiles; only
   exact source wording can be benchmarked. See [`data/SOURCES.md`](data/SOURCES.md).
-- **Help validate it.** Opt-in, anonymous sharing (no IP, email, cookies or timestamp; deletion code
+- **Help validate it.** Explicit consent before the quiz enables automatic anonymous sharing on
+  completion (no IP, email, cookies or exact timestamp; deletion code
   shown once; optional test–retest token) feeds a reliability, factor-analysis, IRT and retest
   pipeline in R. See [`docs/PRIVACY.md`](docs/PRIVACY.md) and [`scripts/analysis`](scripts/analysis).
 - **Keep your results** as a PDF report (vector compass), a PNG share card (1200×1500 or
@@ -135,10 +136,15 @@ npm run db:migrate:remote
 npm run deploy                           # builds and deploys; serves polskew.ankitkapoor.me
 ```
 
-Collection stays off until you create a Turnstile widget for `polskew.ankitkapoor.me`, put its site
-key in `wrangler.jsonc` (`TURNSTILE_SITE_KEY`), run `npx wrangler secret put TURNSTILE_SECRET`, and
-set `COLLECTION_ENABLED` to `"true"`. Read the checklist in [`docs/PRIVACY.md`](docs/PRIVACY.md)
-first.
+Production collection is enabled. Before question 1, each run asks for explicit sharing consent
+and age-18 confirmation, with a separate **Continue without sharing** choice. Consented completed
+runs submit automatically after a fresh Turnstile check and show a deletion receipt. Declined and
+incomplete runs send no responses. See [`docs/PRIVACY.md`](docs/PRIVACY.md).
+
+The production Turnstile site key is in `wrangler.jsonc`; its secret is an encrypted Cloudflare
+binding, never committed. On a new deployment account, create a Turnstile widget for the live
+hostnames and set `TURNSTILE_SECRET` using `npx wrangler secret put TURNSTILE_SECRET`. Pause
+collection by setting `COLLECTION_ENABLED` to `"false"` and redeploying.
 
 U.S. norms appear once `data/norms/us-2024.json` is built from the raw ANES and CES files
 (`npm run norms`) and committed. Until then the benchmark offer is hidden in production.

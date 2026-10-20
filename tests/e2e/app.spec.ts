@@ -5,7 +5,9 @@ test('intro explains the instrument and promises local-only answers', async ({ p
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Where do your views actually sit?');
   await expect(page.getByText('Example result, not yours')).toBeVisible();
-  await expect(page.getByText('Your answers stay in this browser.')).toBeVisible();
+  await expect(
+    page.getByText(/Your answers stay in this browser unless you choose anonymous sharing/),
+  ).toBeVisible();
 });
 
 test('full run reaches results with honest labelling', async ({ page }) => {
@@ -21,6 +23,7 @@ test('full run reaches results with honest labelling', async ({ page }) => {
 test('progress survives a reload and Previous goes back', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: 'Begin' }).click();
+  await page.getByRole('button', { name: 'Continue without sharing' }).click();
   await page.keyboard.press('4');
   await page.keyboard.press('2');
   await expect(page.getByText('Item 3 of 69')).toBeVisible();

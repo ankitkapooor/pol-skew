@@ -7,6 +7,7 @@ export async function completeRun(page: Page): Promise<void> {
     .getByRole('button', { name: /Begin|Retake|Start over/ })
     .first()
     .click();
+  await page.getByRole('button', { name: 'Continue without sharing' }).click();
   for (let i = 0; i < 69; i++) {
     const text = (await page.locator('.statement').textContent()) ?? '';
     const key = text.includes('Somewhat disagree')

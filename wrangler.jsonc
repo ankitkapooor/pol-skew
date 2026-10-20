@@ -25,10 +25,10 @@
     { "name": "SUBMIT_LIMITER", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } },
   ],
   "vars": {
-    // Collection stays off until the owner has signed off the data policy (see docs/PRIVACY.md).
-    "COLLECTION_ENABLED": "false",
+    // Explicit opt-in before the quiz; completed responses are submitted automatically.
+    "COLLECTION_ENABLED": "true",
     // Public Turnstile site key. The secret is set with `npx wrangler secret put TURNSTILE_SECRET`.
-    "TURNSTILE_SITE_KEY": "",
+    "TURNSTILE_SITE_KEY": "0x4AAAAAAFdBbVVxswUvxuvw",
   },
   // Request logs would include client metadata; keep Workers Logs off for this Worker.
   "observability": { "enabled": false },

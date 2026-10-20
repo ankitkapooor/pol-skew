@@ -2,7 +2,13 @@
    values and unknown instrument versions are all rejected. */
 import { BENCHMARK_ITEMS, SPEC } from '../src/benchmark/spec';
 import { SKIPPED } from '../src/benchmark/types';
-import { DEMOGRAPHICS, DEMOGRAPHIC_KEYS, roundTime, type Demographics } from '../src/consent/policy';
+import {
+  CONSENT_VERSION,
+  DEMOGRAPHICS,
+  DEMOGRAPHIC_KEYS,
+  roundTime,
+  type Demographics,
+} from '../src/consent/policy';
 import type { SubmissionPayload } from '../src/consent/types';
 import { ALL_IDS, allowsNoOpinion, byId, maxAnswer } from '../src/instrument/items';
 import { KNOWN_VERSIONS } from '../src/instrument/version';
@@ -40,11 +46,13 @@ export function validateSubmission(
     'demographics',
     'retestToken',
     'ageConfirmed',
+    'consentVersion',
     'turnstileToken',
   ]);
   if (extra) return fail(extra);
 
   if (body.ageConfirmed !== true) return fail('age confirmation required');
+  if (body.consentVersion !== CONSENT_VERSION) return fail('current sharing consent required');
   if (typeof body.instrumentVersion !== 'string' || !knownVersions.includes(body.instrumentVersion))
     return fail('unknown instrument version');
   if (typeof body.turnstileToken !== 'string' || !body.turnstileToken || body.turnstileToken.length > 2048)
@@ -115,6 +123,7 @@ export function validateSubmission(
     answers: A as Record<string, number>,
     times,
     ageConfirmed: true,
+    consentVersion: CONSENT_VERSION,
     turnstileToken: body.turnstileToken,
   };
   if (body.benchmark) value.benchmark = body.benchmark as SubmissionPayload['benchmark'];

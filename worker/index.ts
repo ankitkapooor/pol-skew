@@ -87,8 +87,8 @@ export async function createSubmission(request: Request, env: Env, now = new Dat
   const id = crypto.randomUUID();
   const code = randomCode();
   await env.DB.prepare(
-    `INSERT INTO submissions (id, created_week, instrument_version, item_order, answers, times, quality, scores, benchmark, demographics, retest_token, deletion_hash)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)`,
+    `INSERT INTO submissions (id, created_week, instrument_version, item_order, answers, times, quality, scores, benchmark, demographics, retest_token, deletion_hash, consent_version)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13)`,
   )
     .bind(
       id,
@@ -103,6 +103,7 @@ export async function createSubmission(request: Request, env: Env, now = new Dat
       p.demographics ? JSON.stringify(p.demographics) : null,
       p.retestToken ?? null,
       await sha256Hex(code),
+      p.consentVersion,
     )
     .run();
   return json({ id, deletionCode: code }, 201);

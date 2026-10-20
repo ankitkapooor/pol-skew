@@ -7,6 +7,8 @@ import { renderIntro } from './intro';
 import { renderQ } from './question';
 import { startBenchmark } from './benchmark';
 import { renderResults } from './results';
+import { renderConsent } from './consent';
+import { CONSENT_VERSION } from '../consent/policy';
 
 let S: RunState | null = loadRun();
 let shownAt = 0;
@@ -16,7 +18,7 @@ export const getRun = (): RunState | null => S;
 const isoDate = (d = new Date()): string =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
-export function newRun(): void {
+export function newRun(sharing?: RunState['sharing']): void {
   S = {
     order: newOrder(),
     idx: 0,
@@ -25,19 +27,33 @@ export function newRun(): void {
     words: {},
     done: false,
     version: INSTRUMENT_VERSION,
+    sharing,
   };
   saveRun(S);
 }
 
 export function showIntro(): void {
   renderIntro(S, {
-    start: () => {
-      newRun();
-      showQuestion();
+    start: startWithConsent,
+    resume: () => {
+      if (S?.sharing?.policyVersion === CONSENT_VERSION) showQuestion();
+      else
+        renderConsent((sharing) => {
+          if (!S) return;
+          S.sharing = sharing;
+          saveRun(S);
+          showQuestion();
+        }, showIntro);
     },
-    resume: showQuestion,
     view: () => showResults(false),
   });
+}
+
+function startWithConsent(): void {
+  renderConsent((sharing) => {
+    newRun(sharing);
+    showQuestion();
+  }, showIntro);
 }
 
 export function showQuestion(): void {
@@ -56,10 +72,7 @@ export function showQuestion(): void {
 export function showResults(animate: boolean): void {
   if (!S) return;
   renderResults(S, animate, {
-    retake: () => {
-      newRun();
-      showQuestion();
-    },
+    retake: startWithConsent,
     openBenchmark: () => {
       if (!S) return;
       startBenchmark(S, {

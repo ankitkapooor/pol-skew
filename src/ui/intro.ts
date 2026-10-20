@@ -55,7 +55,7 @@ export function renderIntro(S: RunState | null, h: IntroHandlers): void {
       <li>Answer with your own view, not what you think is expected. There are no right answers.</li>
       <li>You'll see many topics twice, worded from opposite sides and far apart. That's deliberate: it separates your view from a general habit of agreeing.</li>
       <li>Use <em>Neither agree nor disagree</em> for a genuinely middle view and <em>No opinion</em> when you haven't formed one; <em>No opinion</em> answers are skipped in scoring.</li>
-      <li>No statement names a party or politician. Your answers stay in this browser.</li>
+      <li>No statement names a party or politician. Your answers stay in this browser unless you choose anonymous sharing before the quiz.</li>
     </ul>
   </section>`;
   const start = $('start');

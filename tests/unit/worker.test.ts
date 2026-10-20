@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { ALL_IDS, ITEMS } from '../../src/instrument/items';
 import { INSTRUMENT_VERSION } from '../../src/instrument/version';
+import { CONSENT_VERSION } from '../../src/consent/policy';
 import { mulberry32, newOrder } from '../../src/instrument/order';
 import { validateSubmission } from '../../worker/validate';
 import { isoWeek, normaliseCode, randomCode, safeEqual, sha256Hex } from '../../worker/util';
@@ -17,6 +18,7 @@ function validBody(): Record<string, unknown> {
     answers,
     times,
     ageConfirmed: true,
+    consentVersion: CONSENT_VERSION,
     turnstileToken: 'tok',
   };
 }
@@ -30,6 +32,8 @@ describe('validateSubmission', () => {
 
   it.each([
     ['missing age confirmation', (b: Record<string, unknown>) => (b.ageConfirmed = false)],
+    ['missing sharing consent', (b: Record<string, unknown>) => delete b.consentVersion],
+    ['outdated sharing consent', (b: Record<string, unknown>) => (b.consentVersion = 'old')],
     ['unknown version', (b: Record<string, unknown>) => (b.instrumentVersion = '9.9.9+deadbeef')],
     ['extra field', (b: Record<string, unknown>) => (b.ip = '1.2.3.4')],
     ['missing token', (b: Record<string, unknown>) => (b.turnstileToken = '')],
@@ -116,6 +120,7 @@ function fakeDB() {
     'demographics',
     'retest_token',
     'deletion_hash',
+    'consent_version',
   ];
   const db = {
     rows,
@@ -183,6 +188,7 @@ describe('API', () => {
     const row = e.DB.rows.get(id)!;
     expect(row.created_week).toBe('2026-W43');
     expect(row.deletion_hash).toBe(await sha256Hex(deletionCode));
+    expect(row.consent_version).toBe(CONSENT_VERSION);
     expect(JSON.stringify(row)).not.toContain('203.0.113.9');
     expect(JSON.parse(row.quality as string).grade).toMatch(/High|Moderate|Low/);
     expect(JSON.parse(row.scores as string).scales.econ.ok).toBe(true);
